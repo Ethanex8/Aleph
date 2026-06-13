@@ -14,6 +14,12 @@ repos:
         files: ^tools/
   - repo: local
     hooks:
+      - id: format-book
+        name: format-book
+        entry: python -m tools format
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: pytest
         name: pytest
         entry: python -m pytest
