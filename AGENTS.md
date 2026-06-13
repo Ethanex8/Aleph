@@ -16,6 +16,17 @@ Refer to [DESIGN.md](DESIGN.md) for a comprehensive overview of the verifier's a
 
 ---
 
+## 🔄 Contribution Workflow
+
+Direct pushes to the `main` branch are disabled. All modifications to the repository must follow this workflow:
+1. Create a new branch for your changes.
+2. Run all local checks (see Verification & Testing Commands below) to ensure your proofs and code are valid.
+3. Submit a Pull Request targeting the `main` branch.
+4. The automated CI pipeline will run the Aleph verifier, tests, and linters. All status checks must pass before the Pull Request can be merged.
+
+
+---
+
 ## 🛠️ Verification & Testing Commands
 
 To verify and style changes, execute the following commands in the workspace root:
