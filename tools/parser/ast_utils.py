@@ -1,6 +1,4 @@
-"""
-AST Utilities — Pure mathematical and structural operations on FOL formulas and terms.
-"""
+"""AST Utilities — Pure mathematical and structural operations on FOL formulas and terms."""
 
 from __future__ import annotations
 
@@ -86,8 +84,7 @@ def _substitute_c(formula: Formula, name: str, params: tuple[str, ...], var_c: V
 
 
 def substitute(formula: Node, var_name: str, replacement: Term) -> Node:
-    """
-    Substitute all free occurrences of variable `var_name` with `replacement` in `formula`.
+    """Substitute all free occurrences of variable `var_name` with `replacement` in `formula`.
 
     Examples:
         `substitute(∀x (x = y), 'y', 'z')` → `∀x (x = z)`
@@ -116,9 +113,9 @@ def substitute_term(formula: Node, target: Term, replacement: Term) -> Node:
 
 
 def substitute_equality(formula: Node, target: Term, replacement: Term, claimed: Node) -> bool:
-    """
-    Check if `claimed` can be derived from `formula` by replacing exactly ONE
-    occurrence of `target` with `replacement`.
+    """Check if `claimed` can be derived from `formula`.
+
+    Replaces exactly ONE occurrence of `target` with `replacement`.
     """
     skip = 0
     while True:

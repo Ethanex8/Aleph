@@ -1,3 +1,4 @@
+"""Inference rules for first-order quantifiers."""
 from __future__ import annotations
 
 from typing import cast
@@ -30,8 +31,7 @@ def apply_universal_instantiation(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [UI i, t1, t2, ...] — Universal Instantiation.
+    """[UI i, t1, t2, ...] — Universal Instantiation.
 
     From ∀x1 ∀x2 ... φ(x1, x2, ...) (line i), derive φ(t1, t2, ...) by substituting terms.
     Supports multi-variable instantiation.
@@ -73,8 +73,7 @@ def apply_universal_generalization(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [UG i, x, y, ...] — Universal Generalization.
+    """[UG i, x, y, ...] — Universal Generalization.
 
     From φ(c) where c is free (line i), derive ∀x φ(x).
     Supports multi-variable generalization: [UG i, A, B, C] produces
@@ -128,14 +127,13 @@ def apply_exists_intro(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [ExistsIntro i, t, x] — Existential Introduction.
+    """[ExistsIntro i, t, x] — Existential Introduction.
 
     From φ(t) (line i), derive ∃x φ(x).
+
     Args:
-        i: line reference
-        t: term name to abstract over
-        x: new bound variable name for the existential
+        ctx: The proof context.
+        line: The current proof line.
     """
     rule_args = line.justification.args
     if len(rule_args) != 3:
@@ -176,8 +174,7 @@ def apply_exists_elim(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [ExistsElim i, j, c] — Existential Elimination.
+    """[ExistsElim i, j, c] — Existential Elimination.
 
     From ∃x φ(x) (line i) and (φ(c) ⟹ Q) (line j) where c is free, derive Q.
     Note: c must have been declared free and must not be free in Q or ∃x φ(x) or any active assumptions.

@@ -1,5 +1,4 @@
-"""
-AST node definitions for Aleph's First-Order Logic.
+"""AST node definitions for Aleph's First-Order Logic.
 
 Every node is a frozen dataclass, making ASTs immutable, hashable, and
 structurally comparable via ``==``.
@@ -12,8 +11,8 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Variable:
-    """
-    A variable or constant identifier, e.g. ``x``, ``A``, ``∅``.
+    """A variable or constant identifier, e.g. ``x``, ``A``, ``∅``.
+
     Variables must start with a letter and can contain alphanumeric characters or underscores.
     """
 
@@ -39,8 +38,8 @@ class FuncApp:
 
 @dataclass(frozen=True)
 class InfixTerm:
-    """
-    Infix term operator, e.g. ``A ∪ B``, ``A ∩ B``, ``A ∖ B``.
+    """Infix term operator, e.g. ``A ∪ B``, ``A ∩ B``, ``A ∖ B``.
+
     Used to combine two terms into a new term.
     """
 
@@ -58,8 +57,8 @@ Term = Variable | FuncApp | InfixTerm
 
 @dataclass(frozen=True)
 class Predicate:
-    """
-    Predicate application over terms, e.g. ``P(x, y)`` or ``IsEmpty(A)``.
+    """Predicate application over terms, e.g. ``P(x, y)`` or ``IsEmpty(A)``.
+
     Evaluates to a boolean formula.
     """
 
@@ -74,8 +73,8 @@ class Predicate:
 
 @dataclass(frozen=True)
 class SchemaApp:
-    """
-    Schema variable application, e.g. ``φ(x)`` or ``ψ(x, y)``.
+    """Schema variable application, e.g. ``φ(x)`` or ``ψ(x, y)``.
+
     Acts as a placeholder for an arbitrary formula during schema instantiation.
     """
 
@@ -102,8 +101,8 @@ class Membership:
 
 @dataclass(frozen=True)
 class InfixPredicate:
-    """
-    Infix relation application, e.g. ``A ⊆ B``, ``x < y``.
+    """Infix relation application, e.g. ``A ⊆ B``, ``x < y``.
+
     Operators can include ⊆, ⊂, ≈, ≅, ∼, ≃, ≤, ≥, <, >.
     """
 
@@ -233,9 +232,9 @@ Node = Formula | Term
 
 @dataclass(frozen=True)
 class AxiomDecl:
-    """
-    An axiom declaration (trusted fundamental truth, no proof required).
-    e.g. ``axiom Extensionality: ...``
+    """An axiom declaration (trusted fundamental truth, no proof required).
+
+    e.g. ``axiom Extensionality: ...``.
     """
 
     name: str
@@ -252,9 +251,9 @@ class SchemaParam:
 
 @dataclass(frozen=True)
 class SchemaDecl:
-    """
-    An axiom schema declaration parameterized by formula placeholders.
-    e.g. ``schema Specification(φ(x)): ...``
+    """An axiom schema declaration parameterized by formula placeholders.
+
+    e.g. ``schema Specification(φ(x)): ...``.
     """
 
     name: str
@@ -264,9 +263,9 @@ class SchemaDecl:
 
 @dataclass(frozen=True)
 class DefinitionDecl:
-    """
-    A definition / macro declaration. Used to introduce new notation
-    (symbols, relations, or predicates) as biconditionals.
+    """A definition / macro declaration.
+
+    Used to introduce new notation (symbols, relations, or predicates) as biconditionals.
     """
 
     name: str
@@ -296,8 +295,7 @@ class OperationDecl:
 
 @dataclass(frozen=True)
 class Justification:
-    """
-    A structured proof justification containing a rule name and arguments.
+    """A structured proof justification containing a rule name and arguments.
 
     Example:
         `[MP 1, 2]` has rule_name='MP' and args=(1, 2).
@@ -308,8 +306,7 @@ class Justification:
     args: tuple[Term | Formula | int | str | tuple[str, Formula], ...]
 
     def __str__(self) -> str:
-        """
-        Serialize the justification into a human-readable string.
+        """Serialize the justification into a human-readable string.
 
         Converts the rule name and arguments into the standard Aleph
         syntax for justifications (e.g., "MP 1, 2").
@@ -333,8 +330,7 @@ class Justification:
 
 @dataclass(frozen=True)
 class ProofLine:
-    """
-    A single numbered proof step within a theorem.
+    """A single numbered proof step within a theorem.
 
     A proof line consists of a line number, a claim (formula), and a
     justification. It can also be a structural line like 'Let' or 'Assume'.

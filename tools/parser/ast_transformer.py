@@ -1,5 +1,4 @@
-"""
-AST Transformer — base class for applying transformations to FOL formulas.
+"""AST Transformer — base class for applying transformations to FOL formulas.
 
 Implements the Visitor/Transformer pattern to abstract away the structural
 decomposition of AST nodes, eliminating duplicated boilerplate across the verifier.
@@ -30,8 +29,7 @@ from tools.parser.ast_nodes import (
 
 
 class FormulaTransformer:
-    """
-    Base class for transforming AST nodes.
+    """Base class for transforming AST nodes.
 
     By default, it traverses the AST recursively and reconstructs nodes only
     if their children have changed. Subclasses should override specific
@@ -39,8 +37,7 @@ class FormulaTransformer:
     """
 
     def __init__(self, transform_func: Callable[[Node], Node | None] | None = None):
-        """
-        Initialize the transformer.
+        """Initialize the transformer.
 
         Args:
             transform_func: An optional function that takes a node and returns
@@ -50,8 +47,7 @@ class FormulaTransformer:
         self.transform_func = transform_func
 
     def transform(self, formula: Node) -> Node:
-        """
-        Entry point for transforming a formula or term.
+        """Entry point for transforming a formula or term.
 
         Uses structural pattern matching to dispatch the node to the
         appropriate `transform_NodeType` method.
@@ -107,8 +103,7 @@ class FormulaTransformer:
         return node
 
     def transform_FuncApp(self, node: FuncApp) -> Node:
-        """
-        Transform a FuncApp term node.
+        """Transform a FuncApp term node.
 
         Recursively transforms all arguments. Reconstructs the node only if
         at least one argument was modified to preserve object identity.

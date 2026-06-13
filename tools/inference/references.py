@@ -1,3 +1,4 @@
+"""Helper functions for resolving references and substitutions."""
 from __future__ import annotations
 
 from typing import cast
@@ -36,9 +37,9 @@ def _try_match(
     target: Node,
     vars_to_bind: list[str],
 ) -> dict[str, Term] | None:
-    """
-    Try to match ``target`` against ``template`` by finding bindings for
-    the variables in ``vars_to_bind``. Returns a dict of bindings, or
+    """Try to match ``target`` against ``template``.
+
+    Finds bindings for the variables in ``vars_to_bind``. Returns a dict of bindings, or
     None if matching fails.
     """
     bindings: dict[str, Term] = {}
@@ -136,9 +137,9 @@ def _try_match(
 
 
 def _apply_bindings(formula: Node, bindings: dict[str, Term]) -> Node:
-    """
-    Apply variable bindings to a template formula using simultaneous
-    substitution. Uses a two-phase approach to avoid capture when
+    """Apply variable bindings to a template formula.
+
+    Uses simultaneous substitution. Uses a two-phase approach to avoid capture when
     template variables overlap with replacement terms.
 
     Phase 1: Rename all bound template vars to fresh temporaries.
@@ -171,9 +172,10 @@ def _apply_composite_citation(
     base_formula: Formula,
     rule_name: str,
 ) -> Formula:
-    """
-    Helper to apply optional UI (Universal Instantiation) and MP (Modus Ponens)
-    to a base formula (Axiom, Theorem, Constant, or Operation).
+    """Helper to apply optional UI and MP.
+
+    Applies Universal Instantiation (UI) and Modus Ponens (MP) to a base formula
+    (Axiom, Theorem, Constant, or Operation).
     """
     rule_args = line.justification.args
     # rule_args[0] is the name. The rest are terms or line references.
@@ -239,8 +241,7 @@ def apply_axiom_ref(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [Axiom Name, (Term|LineRef), ...] — Axiom Reference.
+    """[Axiom Name, (Term|LineRef), ...] — Axiom Reference.
 
     Cites a loaded axiom by name and optionally applies UI and MP.
     """
@@ -252,8 +253,7 @@ def apply_operation_ref(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [Operation Name, (Term|LineRef), ...] — Operation Reference.
+    """[Operation Name, (Term|LineRef), ...] — Operation Reference.
 
     Cites a loaded operation by name and optionally applies UI and MP.
     """
@@ -265,8 +265,7 @@ def apply_theorem_ref(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [Theorem Name, (Term|LineRef), ...] — Theorem Reference (opaque).
+    """[Theorem Name, (Term|LineRef), ...] — Theorem Reference (opaque).
 
     Cites a previously proven theorem by name and optionally applies UI and MP.
     """
@@ -278,8 +277,7 @@ def apply_constant_ref(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [Constant Name, (Term|LineRef), ...] — Constant Reference.
+    """[Constant Name, (Term|LineRef), ...] — Constant Reference.
 
     Cites a loaded constant by name and optionally applies UI and MP.
     """
@@ -291,8 +289,7 @@ def apply_schema_instantiation(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [Schema Name, φ := concrete_formula] — Schema Instantiation.
+    """[Schema Name, φ := concrete_formula] — Schema Instantiation.
 
     Instantiates an axiom schema by substituting a concrete formula
     for the schema placeholder.

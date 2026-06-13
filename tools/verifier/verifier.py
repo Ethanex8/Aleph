@@ -1,6 +1,6 @@
-"""
-Verifier — the main loop that ties together parsing, extraction,
-inference rules, and DAG resolution.
+"""Verifier loop.
+
+The main loop that ties together parsing, extraction, inference rules, and DAG resolution.
 """
 
 from __future__ import annotations
@@ -36,8 +36,7 @@ def _verify_section(
     section: Section,
     ctx: ProofContext,
 ) -> tuple[bool, list[str]]:
-    """
-    Verify all First-Order Logic blocks within a Section abstraction.
+    """Verify all First-Order Logic blocks within a Section abstraction.
 
     Args:
         section: The Section object containing logical content.
@@ -207,7 +206,7 @@ def _verify_defined_symbol(
     ctx: ProofContext,
 ) -> None:
     """Unifies verification of existence and uniqueness proofs for both constants and operations."""
-    from tools.inference import _try_match
+    from tools.inference.references import _try_match
 
     req_existence = build_req_existence(name, params, formula)
     req_uniqueness = build_req_uniqueness(name, params, formula)
@@ -239,9 +238,10 @@ def _verify_proof_lines(
     theorem: TheoremDecl,
     ctx: ProofContext,
 ) -> None:
-    """
-    Iterate over each proof step in a theorem, dispatching to inference rules
-    to derive conclusions and verifying that they match the claimed formulas.
+    """Iterate over each proof step in a theorem.
+
+    Dispatches to inference rules to derive conclusions and verifying that they match the
+    claimed formulas.
     """
     for line in theorem.proof_lines:
         # Align scope depth for scope openers if starting a sibling or shallower scope
@@ -320,9 +320,9 @@ def _verify_theorem(
     theorem: TheoremDecl,
     ctx: ProofContext,
 ) -> str:
-    """
-    Verify a theorem by walking its proof lines, applying inference rules,
-    and checking the final result matches the claimed statement.
+    """Verify a theorem by walking its proof lines.
+
+    Applies inference rules and checks that the final result matches the claimed statement.
     """
     print(f"  >> Verifying theorem: {theorem.name}")
     print(f"    Claim: {theorem.formula}")
@@ -444,8 +444,7 @@ def verify_book(
     target_section: SectionName | None = None,
     target_files: list[Path] | None = None,
 ) -> bool:
-    """
-    Execute the full verification pipeline for the entire mathematical book.
+    """Execute the full verification pipeline for the entire mathematical book.
 
     1. Loads and validates the manifest (`Manifest.md`).
     2. Iteratively verifies each section in topological order.

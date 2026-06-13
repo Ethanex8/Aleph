@@ -1,3 +1,4 @@
+"""Inference rules for propositional logic."""
 from __future__ import annotations
 
 from tools.context import (
@@ -21,8 +22,7 @@ def apply_hypothesis(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula | None:
-    """
-    [Hypothesis] — introduces an assumption or declares free variables.
+    """[Hypothesis] — introduces an assumption or declares free variables.
 
     For ``Let X, Y be arbitrary``: registers variables as free.
     For ``Assume P``: registers P as an assumption.
@@ -49,8 +49,7 @@ def apply_modus_ponens(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [MP i, j] — Modus Ponens.
+    """[MP i, j] — Modus Ponens.
 
     Derive the consequent of an implication given the implication itself
     and its antecedent.
@@ -83,8 +82,7 @@ def apply_and_intro(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [AndIntro i, j] — Conjunction Introduction.
+    """[AndIntro i, j] — Conjunction Introduction.
 
     From P (line i) and Q (line j), derive P ∧ Q.
     """
@@ -98,8 +96,7 @@ def apply_and_elim(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [AndElim i, Left|Right] — Conjunction Elimination.
+    """[AndElim i, Left|Right] — Conjunction Elimination.
 
     From P ∧ Q (line i), derive P (Left) or Q (Right).
     """
@@ -134,8 +131,7 @@ def apply_or_intro(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [OrIntro i, Left|Right] — Disjunction Introduction.
+    """[OrIntro i, Left|Right] — Disjunction Introduction.
 
     From P (line i), derive P ∨ Q (Left) or Q ∨ P (Right).
     The other disjunct is taken from the claimed_formula formula.
@@ -175,8 +171,7 @@ def apply_impl_intro(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [ImplIntro i, j] — Implication Introduction.
+    """[ImplIntro i, j] — Implication Introduction.
 
     From assumption P (line i) and derived Q (line j), derive P ⟹ Q.
     Line i must be an assumption.
@@ -207,8 +202,7 @@ def apply_iff_intro(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [IffIntro i, j] — Biconditional Introduction.
+    """[IffIntro i, j] — Biconditional Introduction.
 
     From P ⟹ Q (line i) and Q ⟹ P (line j), derive P ⟺ Q.
     """
@@ -236,8 +230,7 @@ def apply_iff_elim(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [IffElim i, Left|Right] — Biconditional Elimination.
+    """[IffElim i, Left|Right] — Biconditional Elimination.
 
     From P ⟺ Q (line i), derive P ⟹ Q (Left) or Q ⟹ P (Right).
     """
@@ -268,8 +261,7 @@ def apply_contradiction(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [Contradiction i, j] — Explosion / Ex Falso Quodlibet.
+    """[Contradiction i, j] — Explosion / Ex Falso Quodlibet.
 
     From P (line i) and ¬P (line j), derive any formula.
     """
@@ -295,8 +287,7 @@ def apply_or_elim(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [OrElim i, j, k] — Disjunction Elimination.
+    """[OrElim i, j, k] — Disjunction Elimination.
 
     From P ∨ Q (line i), P ⟹ R (line j), and Q ⟹ R (line k), derive R.
     """
@@ -334,8 +325,7 @@ def apply_or_idem(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [OrIdem i] — Disjunction Idempotency.
+    """[OrIdem i] — Disjunction Idempotency.
 
     From P ∨ P (line i), derive P.
     """
@@ -356,8 +346,7 @@ def apply_modus_tollens(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [MT i, j] — Modus Tollens.
+    """[MT i, j] — Modus Tollens.
 
     From P ⟹ Q (line i) and ¬Q (line j), derive ¬P.
     """
@@ -391,8 +380,7 @@ def apply_disjunctive_syllogism(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [DS i, j] — Disjunctive Syllogism.
+    """[DS i, j] — Disjunctive Syllogism.
 
     From P ∨ Q (line i) and ¬P (line j), derive Q.
     (Or from P ∨ Q and ¬Q, derive P).
@@ -421,8 +409,7 @@ def apply_double_negation_elimination(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [DNE i] — Double Negation Elimination.
+    """[DNE i] — Double Negation Elimination.
 
     From ¬¬P (line i), derive P.
     """
@@ -443,8 +430,7 @@ def apply_double_negation_introduction(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [DNI i] — Double Negation Introduction.
+    """[DNI i] — Double Negation Introduction.
 
     From P (line i), derive ¬¬P.
     """
@@ -459,8 +445,7 @@ def apply_reductio_ad_absurdum(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [RAA i, j, k] — Reductio Ad Absurdum (Proof by Contradiction).
+    """[RAA i, j, k] — Reductio Ad Absurdum (Proof by Contradiction).
 
     From assumption ¬P (line i) and contradiction Q, ¬Q (lines j, k),
     derive P.
@@ -508,8 +493,7 @@ def apply_vacuous_truth(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [Vacuous i] — Vacuous Truth.
+    """[Vacuous i] — Vacuous Truth.
 
     From ¬P (line i), derive P ⟹ Q for any Q.
     Q is taken from the claimed formula.
@@ -538,8 +522,7 @@ def apply_iff_modus_ponens(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [IffMP i, j] — Biconditional Modus Ponens.
+    """[IffMP i, j] — Biconditional Modus Ponens.
 
     From P ⟺ Q (line i) and P (line j), derive Q.
     (Or from P ⟺ Q and Q, derive P).
@@ -570,8 +553,7 @@ def apply_iff_modus_tollens(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [IffMT i, j] — Biconditional Modus Tollens.
+    """[IffMT i, j] — Biconditional Modus Tollens.
 
     From P ⟺ Q (line i) and ¬P (line j), derive ¬Q.
     (Or from P ⟺ Q and ¬Q, derive ¬P).
@@ -602,8 +584,7 @@ def apply_iff_trans(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [IffTrans i, j] — Transitivity and symmetry of biconditional.
+    """[IffTrans i, j] — Transitivity and symmetry of biconditional.
 
     From P ⟺ Q (line i) and Q ⟺ R (line j) [or any symmetric variant],
     derive P ⟺ R (or R ⟺ P).
@@ -659,8 +640,7 @@ def apply_or_cases(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [OrCases i, j, k] — Disjunction Elimination via nested case subproofs.
+    """[OrCases i, j, k] — Disjunction Elimination via nested case subproofs.
 
     From P ∨ Q (line i), Case 1 ending at line j (assuming P), and Case 2 ending at line k (assuming Q),
     derive R (the common conclusion of both cases, which must match the claimed formula of this line).
