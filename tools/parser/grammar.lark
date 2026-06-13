@@ -1,0 +1,151 @@
+// =============================================================================
+// Aleph FOL Grammar — Lark EBNF
+// Parses fol-block content into a structured AST.
+// =============================================================================
+
+start: (_NL* statement)* _NL*
+
+?statement: axiom_decl
+          | schema_decl
+          | definition_decl
+          | theorem_decl
+          | constant_decl
+          | operation_decl
+
+// ---------------------------------------------------------------------------
+// Top-level declarations
+// ---------------------------------------------------------------------------
+
+
+axiom_decl: "axiom" IDENTIFIER ":" _NL formula
+
+schema_decl: "schema" IDENTIFIER "(" schema_params ")" ":" _NL formula
+
+schema_params: schema_param ("," schema_param)*
+schema_param: SCHEMA_VAR "(" param_vars ")"
+param_vars: IDENTIFIER ("," IDENTIFIER)*
+
+?definition_decl: "definition" def_signature ":" _NL formula -> definition_decl
+                | "definition" op_signature "=" term -> term_definition_decl
+
+?def_signature: IDENTIFIER INFIX_REL IDENTIFIER -> def_infix
+              | IDENTIFIER "(" param_vars ")"  -> def_pred
+
+constant_decl: "constant" IDENTIFIER ":" _NL formula _NL "existence:" IDENTIFIER _NL "uniqueness:" IDENTIFIER
+
+operation_decl: "operation" op_signature ":" _NL formula _NL "existence:" IDENTIFIER _NL "uniqueness:" IDENTIFIER
+
+?op_signature: IDENTIFIER "(" param_vars ")"  -> op_func
+             | IDENTIFIER INFIX_TERM_OP IDENTIFIER -> op_infix
+             | "{" param_vars "}"             -> op_set_enum
+
+theorem_decl: "theorem" IDENTIFIER ":" _NL formula _NL "proof:" proof_body "qed"
+
+// ---------------------------------------------------------------------------
+// Proof body
+// ---------------------------------------------------------------------------
+
+proof_body: (_NL* proof_line)+  _NL*
+
+proof_line: INT "." proof_content justification
+
+?proof_content: let_stmt
+              | assume_stmt
+              | formula
+
+let_stmt: "Let" var_list "be" "arbitrary"
+var_list: IDENTIFIER ("," IDENTIFIER)*
+
+assume_stmt: "Assume" formula
+
+justification: "[" rule_name [just_arg_list] "]"
+
+rule_name: IDENTIFIER
+
+just_arg_list: just_arg ("," just_arg)*
+
+?just_arg: schema_subst
+         | term
+         | INT          -> just_line
+         | IDENTIFIER   -> just_word
+         | INFIX_REL    -> just_word
+         | INFIX_TERM_OP -> just_word
+         | MEMBER       -> just_word
+         | SET_ENUM_NAME -> just_word
+
+
+schema_subst: SCHEMA_VAR ":=" formula
+
+// ---------------------------------------------------------------------------
+// Formulas — precedence encoded via rule nesting (lowest to highest)
+//   ⟺  <  ⟹  <  ∨  <  ∧  <  ¬  <  quantifiers  <  atoms
+// ---------------------------------------------------------------------------
+
+?formula: biconditional
+
+?biconditional: implication
+              | biconditional BICOND implication   -> bicond
+
+?implication: disjunction
+              | disjunction IMPLIES implication      -> implies
+
+?disjunction: conjunction
+            | disjunction OR conjunction            -> or_
+
+?conjunction: negation
+            | conjunction AND negation              -> and_
+
+?negation: NOT negation                             -> not_
+         | quantified
+
+?quantified: FORALL IDENTIFIER negation            -> forall
+           | EXISTS IDENTIFIER negation            -> exists
+           | atom
+
+?atom: IDENTIFIER "(" term_list ")"                 -> predicate
+     | SCHEMA_VAR "(" term_list ")"                 -> schema_app
+     | term MEMBER term                             -> membership
+     | term INFIX_REL term                          -> infix_predicate
+     | term "=" term                                -> equality
+     | "(" formula ")"
+
+// ---------------------------------------------------------------------------
+// Terms
+// ---------------------------------------------------------------------------
+
+term_list: term ("," term)*
+
+?term: IDENTIFIER "(" term_list ")"                 -> func_app
+     | term INFIX_TERM_OP term                      -> infix_term
+     | IDENTIFIER                                   -> variable
+     | "{" term_list "}"                            -> set_enum
+
+// ---------------------------------------------------------------------------
+// Terminals
+// ---------------------------------------------------------------------------
+
+FORALL: "∀"
+EXISTS: "∃"
+AND: "∧"
+OR: "∨"
+NOT: "¬"
+IMPLIES: "⟹"
+BICOND: "⟺"
+MEMBER: "∈"
+INFIX_REL: /[⊆⊂≈≅∼≃≤≥<>∉≠]/
+INFIX_TERM_OP: /[∪∩∖]/
+
+IDENTIFIER: /[A-Za-z\u03B1-\u03C9\u0391-\u03A9\u2100-\u214F\u2205][A-Za-z0-9_]*(\.[A-Za-z\u03B1-\u03C9\u0391-\u03A9\u2100-\u214F\u2205][A-Za-z0-9_]*)*/
+SCHEMA_VAR.2: /[Φφψχ][A-Za-z0-9]*/
+SET_ENUM_NAME: /\{,*\}/
+
+
+
+INT: /[0-9]+/
+
+_NL: /\s*\r?\n\s*/
+COMMENT: /\/\/[^\n]*/
+
+%import common.WS_INLINE
+%ignore WS_INLINE
+%ignore COMMENT

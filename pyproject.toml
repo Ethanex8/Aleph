@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aleph"
+version = "0.1.0"
+description = "First-Order Logic verifier for literate mathematics"
+requires-python = ">=3.12"
+dependencies = [
+    "lark>=1.3.1",
+    "pyyaml>=6.0.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.15.17",
+    "pre-commit>=4.6.0",
+    "mypy>=2.1.0",
+]
+
+[project.scripts]
+aleph = "tools.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["tools*"]
+
+[tool.ruff]
+# Target Python version matching requires-python
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort (import sorting)
+    "UP",   # pyupgrade
+    "RUF",  # Ruff-specific rules
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "C4",   # flake8-comprehensions
+    "PT",   # flake8-pytest-style
+    "S",    # flake8-bandit (security)
+    "D",    # pydocstyle (docstrings)
+]
+ignore = [
+    "E501",   # line-length (rely on ruff format instead of strict lint rules)
+    "RUF001", # ambiguous unicode characters (intentional math symbols)
+    "RUF002", # ambiguous unicode characters in docstrings
+    "RUF003", # ambiguous unicode characters in comments
+    "D",      # pydocstyle — enabled but ignored until docstrings are addressed incrementally
+    "S101",   # assert statements are used for type narrowing and internal logic checks
+]
+
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["F401", "F403"]
+"tests/**" = ["S101", "D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
