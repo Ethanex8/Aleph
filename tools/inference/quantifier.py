@@ -1,4 +1,5 @@
 """Inference rules for first-order quantifiers."""
+
 from __future__ import annotations
 
 from typing import cast

@@ -1,4 +1,5 @@
 """Inference rules for equality and replacement."""
+
 from __future__ import annotations
 
 from tools.context import (

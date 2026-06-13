@@ -1,4 +1,5 @@
 """Helper functions for resolving references and substitutions."""
+
 from __future__ import annotations
 
 from typing import cast

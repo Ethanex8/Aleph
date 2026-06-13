@@ -1,4 +1,5 @@
 """Inference rules for propositional logic."""
+
 from __future__ import annotations
 
 from tools.context import (

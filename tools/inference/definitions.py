@@ -1,4 +1,5 @@
 """Inference rules for definitions, constants, and operations."""
+
 from __future__ import annotations
 
 from tools.context import (
