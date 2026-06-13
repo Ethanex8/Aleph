@@ -6,7 +6,6 @@ Usage::
 """
 
 import argparse
-import subprocess
 import sys
 from pathlib import Path
 
@@ -60,12 +59,6 @@ def main() -> None:
         help="File or directory to verify (default: 'book')",
     )
 
-    # check subcommand
-    subparsers.add_parser(
-        "check",
-        help="Run all checks (lint, format, types, tests, book verification).",
-    )
-
     # format subcommand
     format_parser = subparsers.add_parser(
         "format",
@@ -91,43 +84,7 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    if args.subcommand == "check":
-        print("--- Running Ruff Check ---")
-        res = subprocess.run([sys.executable, "-m", "ruff", "check", "."], check=False)
-        if res.returncode != 0:
-            sys.exit(res.returncode)
-
-        print("\n--- Running Ruff Format Check ---")
-        res = subprocess.run([sys.executable, "-m", "ruff", "format", "--check", "."], check=False)
-        if res.returncode != 0:
-            sys.exit(res.returncode)
-
-        print("\n--- Running Mypy ---")
-        res = subprocess.run([sys.executable, "-m", "mypy", "tools/"], check=False)
-        if res.returncode != 0:
-            sys.exit(res.returncode)
-
-        print("\n--- Running Pytest ---")
-        res = subprocess.run([sys.executable, "-m", "pytest"], check=False)
-        if res.returncode != 0:
-            sys.exit(res.returncode)
-
-        print("\n--- Running Book Verification ---")
-        from tools.common import get_target_files
-
-        target = Path("book")
-        manifest_path = _find_manifest(target)
-        if manifest_path is None:
-            print("Error: No Manifest.md found in 'book/'")
-            sys.exit(1)
-        target_files = get_target_files(target)
-        success = verify_book(manifest_path, target_files=target_files)
-        if not success:
-            sys.exit(1)
-
-        print("\n[PASS] All checks passed!")
-        sys.exit(0)
-    elif args.subcommand == "verify":
+    if args.subcommand == "verify":
         from tools.common import get_target_files
 
         target = Path(args.path)

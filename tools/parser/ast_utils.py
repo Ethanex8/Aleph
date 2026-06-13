@@ -94,7 +94,7 @@ def substitute(formula: Node, var_name: str, replacement: Term) -> Node:
     def transform(node: Node) -> Node | None:
         if isinstance(node, Variable) and node.name == var_name:
             return replacement
-        if isinstance(node, ForAll | Exists) and node.variable == var_name:
+        if isinstance(node, (ForAll, Exists)) and node.variable == var_name:
             return node  # var is re-bound; do not enter scope
         return None
 
@@ -154,7 +154,7 @@ def substitute_schema(
                 result = substitute(result, param_var, actual_arg)
             return result
         # Predicates and FuncApps don't contain schema apps in our use
-        if isinstance(node, Predicate | FuncApp):
+        if isinstance(node, (Predicate, FuncApp)):
             return node
         return None
 

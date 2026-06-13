@@ -50,7 +50,7 @@ def _try_match(
             if tmpl.name in bindings:
                 return bindings[tmpl.name] == tgt
             else:
-                if isinstance(tgt, Variable | FuncApp | InfixTerm):
+                if isinstance(tgt, (Variable, FuncApp, InfixTerm)):
                     bindings[tmpl.name] = tgt
                     return True
                 return False
@@ -195,7 +195,7 @@ def _apply_composite_citation(
                     f"Need {current_formula.antecedent if isinstance(current_formula, Implies) else 'an implication'}.",
                     line.number,
                 )
-        elif isinstance(arg, Variable | FuncApp | InfixTerm):
+        elif isinstance(arg, (Variable, FuncApp, InfixTerm)):
             # Universal Instantiation
             if isinstance(current_formula, ForAll):
                 current_formula = cast(

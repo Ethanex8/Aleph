@@ -53,7 +53,7 @@ ignore = [
     "RUF002", # ambiguous unicode characters in docstrings
     "RUF003", # ambiguous unicode characters in comments
     "S101",   # assert statements are used for type narrowing and internal logic checks
-    "S603",   # subprocess call: check for execution of untrusted input (intentional for internal tools)
+    "UP038",  # Use `X | Y` in `isinstance` call instead of `(X, Y)` (requires Python 3.10+)
 ]
 
 
