@@ -1,5 +1,4 @@
-"""
-Section representation encapsulating logical section source, line mapping, and metadata.
+"""Section representation encapsulating logical section source, line mapping, and metadata.
 
 Centralises all conversions between dot-separated logical names
 (``SetTheory.Extensionality``) and filesystem paths
@@ -15,8 +14,7 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class SectionName:
-    """
-    A dot-separated logical section name, e.g. ``'SetTheory.Extensionality'``.
+    """A dot-separated logical section name, e.g. ``'SetTheory.Extensionality'``.
 
     Frozen and hashable — safe for use as dict keys and in sets.
     """
@@ -25,8 +23,7 @@ class SectionName:
 
     @staticmethod
     def from_path(path: str) -> SectionName:
-        """
-        Build a ``SectionName`` from a relative file path.
+        r"""Build a ``SectionName`` from a relative file path.
 
         Example:
             ``"SetTheory/Extensionality.md"`` → ``SectionName("SetTheory.Extensionality")``
@@ -51,8 +48,7 @@ class SectionName:
 
     @staticmethod
     def parse_qualified_import(qualified_name: str) -> tuple[str, str]:
-        """
-        Parse a fully qualified import into (section_prefix, identifier).
+        """Parse a fully qualified import into (section_prefix, identifier).
 
         ``"SetTheory.Axioms.Pairing"`` → ``("SetTheory.Axioms", "Pairing")``
 
@@ -67,8 +63,7 @@ class SectionName:
         return qualified_name[:last_dot], qualified_name[last_dot + 1 :]
 
     def to_path(self) -> str:
-        """
-        Convert the logical section name back into a relative filesystem path.
+        """Convert the logical section name back into a relative filesystem path.
 
         Example:
             ``SectionName("SetTheory.Extensionality")`` → ``"SetTheory/Extensionality.md"``
@@ -79,16 +74,17 @@ class SectionName:
         return self.name.replace(".", "/") + ".md"
 
     def __str__(self) -> str:
+        """Return the logical section name."""
         return self.name
 
     def __repr__(self) -> str:
+        """Return a string representation of the SectionName."""
         return f"SectionName({self.name!r})"
 
 
 @dataclass
 class Section:
-    """
-    Represents a mathematical section loaded for verification.
+    """Represents a mathematical section loaded for verification.
 
     Contains the logical name, source code (combined from logical blocks),
     line mapping, and the optional physical path.
@@ -101,9 +97,7 @@ class Section:
 
     @classmethod
     def from_file(cls, name: SectionName, file_path: Path) -> Section:
-        """
-        Load a section from a file, extracting its logical first-order logic blocks.
-        """
+        """Load a section from a file, extracting its logical first-order logic blocks."""
         from tools.parser.extractor import extract_and_combine_fol_blocks_from_file
 
         combined_source, line_map = extract_and_combine_fol_blocks_from_file(file_path)

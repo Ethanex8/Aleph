@@ -1,5 +1,4 @@
-"""
-Markdown FOL Extractor — extracts ``fol`` fenced code blocks from Markdown.
+"""Markdown FOL Extractor — extracts ``fol`` fenced code blocks from Markdown.
 
 Returns raw text content with line offsets for error reporting.
 """
@@ -10,8 +9,7 @@ from pathlib import Path
 
 
 def extract_and_combine_fol_blocks(markdown_text: str) -> tuple[str, list[int]]:
-    """
-    Extract all ``fol`` fenced code blocks and combine them into a single string.
+    """Extract all ``fol`` fenced code blocks and combine them into a single string.
 
     Returns a tuple ``(combined_fol_source, line_map)`` where:
     - ``combined_fol_source`` is the concatenated content of all blocks separated by newlines.
@@ -33,8 +31,7 @@ def extract_and_combine_fol_blocks(markdown_text: str) -> tuple[str, list[int]]:
 
 
 def extract_and_combine_fol_blocks_from_file(file_path: str | Path) -> tuple[str, list[int]]:
-    """
-    Read a Markdown file and extract and combine all ``fol`` code blocks.
+    """Read a Markdown file and extract and combine all ``fol`` code blocks.
 
     Returns a tuple ``(combined_fol_source, line_map)``.
     """

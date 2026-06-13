@@ -1,3 +1,5 @@
+"""Inference rules for equality and replacement."""
+
 from __future__ import annotations
 
 from tools.context import (
@@ -18,8 +20,7 @@ def apply_eq_replace(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [EqReplace i, j] — Equality Replacement.
+    """[EqReplace i, j] — Equality Replacement.
 
     From φ (line i) and t = s (line j), derive φ' where one occurrence
     of t has been replaced by s (or s by t).
@@ -55,8 +56,7 @@ def apply_eq_replace_all(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [EqReplaceAll i, j] — Equality Replacement (All Occurrences).
+    """[EqReplaceAll i, j] — Equality Replacement (All Occurrences).
 
     From φ (line i) and t = s (line j), derive φ' where ALL occurrences
     of t have been replaced by s (or s by t).
@@ -92,8 +92,7 @@ def apply_eq_intro(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [EqIntro] — Equality Introduction (Reflexivity).
+    """[EqIntro] — Equality Introduction (Reflexivity).
 
     Derive t = t for any term t.
     """

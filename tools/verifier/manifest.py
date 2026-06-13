@@ -1,5 +1,6 @@
-"""
-Manifest Loader — loads ``Manifest.md``, resolves qualified imports against
+"""Manifest Loader.
+
+Loads ``Manifest.md``, resolves qualified imports against
 declared exports, derives the dependency graph, validates completeness,
 and produces a topologically sorted execution order.
 """
@@ -64,8 +65,8 @@ class Manifest:
 
     @classmethod
     def _read_yaml(cls, manifest_path: Path) -> dict[str, Any]:
-        """
-        Read the manifest file, extracting the YAML manifest data.
+        """Read the manifest file, extracting the YAML manifest data.
+
         If the file has a `.md` extension, extracts the YAML block inside ` ```yaml ` fences.
         Otherwise, parses the file directly as YAML.
         """
@@ -101,9 +102,9 @@ class Manifest:
     def _parse_sections(
         cls, sections_list: list[Any], book_dir: Path
     ) -> dict[SectionName, SectionManifest]:
-        """
-        Parse a raw sections list from YAML into a dictionary of SectionManifest objects,
-        validating syntax, files, and imports.
+        """Parse a raw sections list from YAML into a dictionary of SectionManifest objects.
+
+        Validates syntax, files, and imports.
         """
         if not isinstance(sections_list, list):
             raise ManifestError("Malformed manifest: 'sections' must be a list")
@@ -163,8 +164,8 @@ class Manifest:
     def _build_export_index(
         cls, sections: dict[SectionName, SectionManifest]
     ) -> tuple[dict[str, SectionName], dict[str, SectionName]]:
-        """
-        Build lookup maps for exports.
+        """Build lookup maps for exports.
+
         Returns a tuple of:
         1. export_index: mapping from qualified export name to the SectionName that defines it.
         2. prefix_to_name: mapping from section qualified prefixes to their SectionName values.
@@ -194,9 +195,10 @@ class Manifest:
         export_index: dict[str, SectionName],
         prefix_to_name: dict[str, SectionName],
     ) -> list[SectionName]:
-        """
-        Resolve each section's qualified imports to their defining exporter section,
-        construct a dependency graph, check for cycles, and return a topologically sorted section list.
+        """Resolve each section's qualified imports to their defining exporter section.
+
+        Constructs a dependency graph, checks for cycles, and returns a topologically sorted
+        section list.
         """
         # graph: maps each SectionName to the set of SectionNames it depends on
         graph: dict[SectionName, set[SectionName]] = {name: set() for name in sections}
@@ -255,8 +257,7 @@ class Manifest:
 
     @classmethod
     def load(cls, manifest_path: Path) -> Manifest:
-        """
-        Load the book's manifest and construct the dependency graph.
+        """Load the book's manifest and construct the dependency graph.
 
         Parses the `Manifest.md` manifest, resolves qualified imports against
         declared exports across all sections, and performs a topological sort
@@ -282,8 +283,8 @@ class Manifest:
         )
 
     def ensure_section_loaded(self, sec_name: SectionName) -> None:
-        """
-        Ensure that the symbols from a given section are loaded into the global registries.
+        """Ensure that the symbols from a given section are loaded into the global registries.
+
         If not already loaded, it parses the section file and populates the cache.
         """
         if sec_name in self.loaded_sections:
@@ -344,8 +345,8 @@ class Manifest:
     def populate_context_from_imports(
         self, sec_info: SectionManifest, ctx: ProofContext
     ) -> tuple[bool, str | None]:
-        """
-        Populate a file's fresh ProofContext with imported symbols from the global registries.
+        """Populate a file's fresh ProofContext with imported symbols from the global registries.
+
         Validates that imports exist and do not cause local name collisions.
         """
         expanded_imports = []
@@ -418,9 +419,10 @@ class Manifest:
     def record_global_exports(
         self, sec_info: SectionManifest, actual_exports: list[str], ctx: ProofContext
     ) -> None:
-        """
-        Record newly verified symbols into the global registries under their qualified names
-        (prefix.symbol_name), making them available for other sections to import.
+        """Record newly verified symbols into the global registries.
+
+        Symbols are recorded under their qualified names (prefix.symbol_name), making them available
+        for other sections to import.
         """
         prefix = sec_info.name.name
 
@@ -448,9 +450,9 @@ class Manifest:
 def validate_completeness(
     book_dir: str | Path, sections: dict[SectionName, SectionManifest]
 ) -> None:
-    """
-    Walk the book directory and ensure every ``.md`` file is registered
-    in ``Manifest.md``. Raises ``ManifestError`` if any orphaned files are found.
+    """Walk the book directory and ensure every ``.md`` file is registered in ``Manifest.md``.
+
+    Raises ``ManifestError`` if any orphaned files are found.
     """
     book_dir = Path(book_dir)
     registered_names = set(sections.keys())
@@ -469,8 +471,8 @@ def validate_completeness(
 
 
 def validate_exports(section_info: SectionManifest, actual_exports: list[str]) -> None:
-    """
-    Compare declared exports against actual verification results.
+    """Compare declared exports against actual verification results.
+
     Raises ``ManifestError`` on mismatch.
     """
     actual = set(actual_exports)

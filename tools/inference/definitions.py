@@ -1,3 +1,5 @@
+"""Inference rules for definitions, constants, and operations."""
+
 from __future__ import annotations
 
 from tools.context import (
@@ -21,8 +23,7 @@ def apply_definition(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """
-    [Def Name, i] — Definition Expansion / Contraction.
+    """[Def Name, i] — Definition Expansion / Contraction.
 
     Expands or contracts a definition one layer deep. The definition must
     be a biconditional ∀...∀(LHS ⟺ RHS). This rule matches the claimed_formula
@@ -97,8 +98,8 @@ def _apply_definition_with_source(
     def_vars: list[str],
     step_number: int,
 ) -> Formula:
-    """
-    Apply a definition where an input source line is specified.
+    """Apply a definition where an input source line is specified.
+
     Matches the source line against either the LHS or RHS template,
     applies the resulting bindings to the opposite side template, and
     verifies that it produces the claimed formula.
@@ -133,8 +134,8 @@ def _apply_definition_without_source(
     def_vars: list[str],
     step_number: int,
 ) -> Formula:
-    """
-    Apply a definition without a source line specified.
+    """Apply a definition without a source line specified.
+
     Matches the claimed formula against the definition body (e.g. LHS ⟺ RHS or LHS = RHS)
     to verify it is a valid instantiation of the definition.
     """

@@ -1,5 +1,4 @@
-"""
-Aleph Tools — centralized CLI for Aleph development utilities.
+"""Aleph Tools — centralized CLI for Aleph development utilities.
 
 Usage::
 
@@ -34,8 +33,8 @@ def _find_manifest(start_path: Path) -> Path | None:
 
 
 def main() -> None:
-    """
-    Root entry point for Aleph tools.
+    """Root entry point for Aleph tools.
+
     Dispatches to various subcommands.
     """
     # Ensure stdout can handle Unicode (formula symbols like ∀, ∃, ∈)

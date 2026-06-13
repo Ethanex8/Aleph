@@ -52,14 +52,13 @@ ignore = [
     "RUF001", # ambiguous unicode characters (intentional math symbols)
     "RUF002", # ambiguous unicode characters in docstrings
     "RUF003", # ambiguous unicode characters in comments
-    "D",      # pydocstyle — enabled but ignored until docstrings are addressed incrementally
     "S101",   # assert statements are used for type narrowing and internal logic checks
 ]
 
 
 [tool.ruff.lint.per-file-ignores]
 "**/__init__.py" = ["F401", "F403"]
-"tests/**" = ["S101", "D"]
+"tests/**" = ["S101", "D100", "D101", "D102", "D103", "D104", "D105", "D107"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

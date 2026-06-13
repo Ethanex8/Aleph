@@ -1,3 +1,5 @@
+"""Core inference rule registry and dispatcher."""
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -69,8 +71,7 @@ def apply_rule(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula | None:
-    """
-    Dispatch a proof line to its corresponding inference rule evaluator.
+    """Dispatch a proof line to its corresponding inference rule evaluator.
 
     Validates the justification tag (e.g., "MP", "UI", "Axiom") and
     executes the appropriate logic to derive a formula.

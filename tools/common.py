@@ -1,6 +1,4 @@
-"""
-Common utilities for Aleph tools.
-"""
+"""Common utilities for Aleph tools."""
 
 import re
 from collections.abc import Generator
@@ -11,9 +9,10 @@ CLOSE_FENCE_PAT = re.compile(r"^```\s*$")
 
 
 def get_target_files(target_path: Path) -> list[Path]:
-    """
-    Recursively find all target markdown files to process, skipping hidden files/directories and Manifest.md.
-    If target_path is a file, returns a list containing only that file if it's a markdown file.
+    """Recursively find all target markdown files to process.
+
+    Skips hidden files/directories and Manifest.md. If target_path is a file, returns a
+    list containing only that file if it's a markdown file.
     """
     if target_path.is_file():
         if target_path.suffix == ".md" and target_path.name != "Manifest.md":
@@ -31,9 +30,7 @@ def get_target_files(target_path: Path) -> list[Path]:
 
 
 def iter_fol_lines(markdown_text: str) -> Generator[tuple[int, str, bool, str], None, None]:
-    """
-    Yields (line_number_1_indexed, stripped_line_text, is_inside_fol, line_ending) for every line.
-    """
+    """Yields (line_number_1_indexed, stripped_line_text, is_inside_fol, line_ending) for every line."""
     inside_fol = False
     for idx, line in enumerate(markdown_text.splitlines(keepends=True)):
         stripped = line.rstrip("\r\n")

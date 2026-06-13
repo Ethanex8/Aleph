@@ -1,5 +1,4 @@
-"""
-Proof Context — tracks all state during verification.
+"""Proof Context — tracks all state during verification.
 
 Maintain axioms, schemas, definitions, proven theorems, and per-proof
 state (hypotheses, proof lines, free variables).
@@ -19,6 +18,7 @@ class VerificationError(Exception):
     """Raised when a proof step fails verification."""
 
     def __init__(self, message: str, line_number: int | None = None):
+        """Initialize VerificationError."""
         self.line_number = line_number
         if line_number is not None:
             message = f"Line {line_number}: {message}"
@@ -57,8 +57,7 @@ class Scope:
 
 @dataclass
 class ProofContext:
-    """
-    Central state object threaded through verification.
+    """Central state object threaded through verification.
 
     Global state (persists across files):
         - axioms, schemas, definitions, proven_theorems, imports
@@ -83,6 +82,7 @@ class ProofContext:
     line_to_scope: dict[int, Scope] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
+        """Initialize current_scope to root_scope."""
         self.current_scope = self.root_scope
 
     def reset_proof(self) -> None:

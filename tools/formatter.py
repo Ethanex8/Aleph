@@ -1,6 +1,4 @@
-"""
-FOL Formatter — standardizes the spacing of justifications `[...]` in `fol` blocks.
-"""
+"""FOL Formatter — standardizes the spacing of justifications `[...]` in `fol` blocks."""
 
 from __future__ import annotations
 
@@ -27,8 +25,8 @@ def format_fol_line(line: str, spacing: int = 1) -> str:
 
 
 def format_content(content: str, spacing: int = 1) -> tuple[str, bool]:
-    """
-    Format all `fol` blocks in the given markdown content.
+    """Format all `fol` blocks in the given markdown content.
+
     Returns a tuple (formatted_content, is_changed).
     """
     from tools.common import iter_fol_lines
@@ -51,8 +49,8 @@ def format_content(content: str, spacing: int = 1) -> tuple[str, bool]:
 
 
 def format_file(file_path: Path, spacing: int = 1, check: bool = False) -> bool:
-    """
-    Format the specified markdown file.
+    """Format the specified markdown file.
+
     If check is True, does not modify the file; returns True if formatting changes are needed.
     If check is False, writes the formatted content back; returns True if changes were written.
     """
@@ -79,8 +77,8 @@ def format_file(file_path: Path, spacing: int = 1, check: bool = False) -> bool:
 def format_directory(
     dir_path: Path, spacing: int = 1, check: bool = False
 ) -> tuple[list[Path], list[Path]]:
-    """
-    Recursively find all markdown files in dir_path and format them.
+    """Recursively find all markdown files in dir_path and format them.
+
     Returns a tuple of (modified_files, unchanged_files).
     """
     from tools.common import get_target_files

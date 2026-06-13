@@ -1,5 +1,4 @@
-"""
-FOL Parser — transforms Lark parse trees into Aleph AST nodes.
+"""FOL Parser — transforms Lark parse trees into Aleph AST nodes.
 
 Usage::
 
@@ -99,8 +98,8 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
     def def_infix(
         self, left: Token, op: Token, right: Token
     ) -> tuple[str, InfixPredicate, list[str]]:
-        """
-        Produce definition signature for infix notation.
+        """Produce definition signature for infix notation.
+
         Returns a tuple of (operator_name, LHS InfixPredicate node, variable parameters).
         """
         left_var = Variable(str(left))
@@ -109,8 +108,8 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         return (str(op), lhs, [str(left), str(right)])
 
     def def_pred(self, name: Token, var_list: Any) -> tuple[str, Predicate, list[str]]:
-        """
-        Produce definition signature for standard prefix predicate notation.
+        """Produce definition signature for standard prefix predicate notation.
+
         Returns a tuple of (predicate_name, LHS Predicate node, variable parameters).
         """
         vars = [Variable(v) for v in var_list]
@@ -118,8 +117,8 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         return (str(name), lhs, list(var_list))
 
     def definition_decl(self, signature: Any, formula: Formula) -> DefinitionDecl:
-        """
-        Construct a DefinitionDecl AST node.
+        """Construct a DefinitionDecl AST node.
+
         Converts LHS <=> RHS into a universally quantified formula.
         """
         name, lhs, params = signature
@@ -130,8 +129,8 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         return DefinitionDecl(name=name, formula=full_formula)
 
     def term_definition_decl(self, signature: Any, term: Term) -> DefinitionDecl:
-        """
-        Construct a DefinitionDecl for a term macro.
+        """Construct a DefinitionDecl for a term macro.
+
         Converts LHS = RHS into a universally quantified formula.
         """
         name, params = signature
@@ -197,9 +196,10 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         return [line for line in lines if line is not None]
 
     def proof_line(self, number: Token, content: Any, justification: Justification) -> ProofLine:
-        """
-        Create a ProofLine AST node.
-        Handles either structural statements (Let/Assume, which return dicts) or standard formula lines.
+        """Create a ProofLine AST node.
+
+        Handles either structural statements (Let/Assume, which return dicts) or standard
+        formula lines.
         """
         num = int(str(number))
         actual_indent = (number.column or 1) - 1
@@ -350,8 +350,9 @@ def _validate_proof_indentation(
     source: str,
     declarations: list[Any],
 ) -> None:
-    """
-    Walk every TheoremDecl in ``declarations`` and verify that each proof
+    """Verify proof line indentation.
+
+    Walks every TheoremDecl in ``declarations`` and verify that each proof
     line's leading whitespace matches the expected scope depth.
 
     Indentation convention
@@ -474,8 +475,7 @@ _transformer = FolTransformer()
 
 
 def parse_fol(source: str) -> list[Any]:
-    """
-    Parse a string of FOL source text into Aleph AST declarations.
+    """Parse a string of FOL source text into Aleph AST declarations.
 
     Processes top-level declarations such as Axioms, Schemas, Definitions,
     Constants, Operations, and Theorems.
@@ -498,8 +498,7 @@ def parse_fol(source: str) -> list[Any]:
 
 
 def parse_formula(source: str) -> Formula:
-    """
-    Parse a single standalone formula string.
+    """Parse a single standalone formula string.
 
     Useful for tests and programmatically creating formula AST nodes.
     Wraps the formula in a dummy axiom to reuse the main parser logic.
