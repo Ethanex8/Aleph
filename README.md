@@ -16,14 +16,11 @@ git clone https://github.com/ethanex8/aleph.git
 cd aleph
 pip install -e ".[dev]"
 
-# Verify the entire book
-python -m tools verify
+# Run all checks (Linter, Mypy, Tests, Book Verification)
+python -m tools check
 
 # Format the entire book
 python -m tools format
-
-# Run the test suite
-python -m pytest
 ```
 
 ## Authoring Protocol
@@ -32,8 +29,7 @@ python -m pytest
 
 ```bash
 python -m tools format
-python -m tools verify
-python -m pytest
+python -m tools check
 ```
 
 The build and tests must pass before any commit. Note that you MUST run the Python tests even if you are just modifying the Markdown (`.md`) files, because the end-to-end tests are tightly coupled to the mathematical content in the `book/` directory. They contain hardcoded assertions regarding specific file paths, total axiom counts, and theorem names. When refactoring the mathematical structure, you must update the corresponding e2e tests to match the new reality.

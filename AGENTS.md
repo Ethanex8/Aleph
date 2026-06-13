@@ -31,6 +31,12 @@ Direct pushes to the `main` branch are disabled. All modifications to the reposi
 
 To verify and style changes, execute the following commands in the workspace root:
 
+*   **Run All Checks (Recommended):**
+    ```bash
+    python -m tools check
+    ```
+    This command sequentially runs Ruff, Mypy, Pytest, and the Aleph book verification.
+
 *   **Verify the Mathematical Book:**
     ```bash
     python -m tools verify

@@ -11,3 +11,18 @@ repos:
       - id: mypy
         additional_dependencies: [lark, pyyaml, types-PyYAML]
         args: [--ignore-missing-imports]
+        files: ^tools/
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: python -m pytest
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: verify
+        name: verify
+        entry: python -m tools verify
+        language: system
+        pass_filenames: false
+        always_run: true

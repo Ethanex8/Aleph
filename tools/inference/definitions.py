@@ -62,7 +62,7 @@ def apply_definition(
     def_body, def_vars = unwrap_forall(defn)
 
     # Check definition format
-    if isinstance(def_body, (Biconditional, Equality)):
+    if isinstance(def_body, Biconditional | Equality):
         lhs_template = def_body.left
         rhs_template = def_body.right
     else:

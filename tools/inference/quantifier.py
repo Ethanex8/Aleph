@@ -51,7 +51,7 @@ def apply_universal_instantiation(
 
     for replacement in replacements:
         # Verify that the argument is a term node in the AST
-        if not isinstance(replacement, (Variable, FuncApp, InfixTerm)):
+        if not isinstance(replacement, Variable | FuncApp | InfixTerm):
             raise VerificationError(f"UI: expected term, got: {replacement}", line.number)
 
         # Formula must be universally quantified for each step
@@ -147,7 +147,7 @@ def apply_exists_intro(
     term_val = rule_args[1]
     var_name = str(rule_args[2]).strip()
 
-    if not isinstance(term_val, (Variable, FuncApp, InfixTerm)):
+    if not isinstance(term_val, Variable | FuncApp | InfixTerm):
         raise VerificationError(
             f"ExistsIntro: expected term as second argument, got: {term_val}", line.number
         )
