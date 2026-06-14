@@ -32,14 +32,18 @@ def _find_manifest(start_path: Path) -> Path | None:
     return None
 
 
+def _setup_stdout() -> None:
+    """Ensure stdout can handle Unicode (formula symbols like ∀, ∃, ∈)."""
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+
 def main() -> None:
     """Root entry point for Aleph tools.
 
     Dispatches to various subcommands.
     """
-    # Ensure stdout can handle Unicode (formula symbols like ∀, ∃, ∈)
-    if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    _setup_stdout()
 
     parser = argparse.ArgumentParser(
         prog="aleph-tools",

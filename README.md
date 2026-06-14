@@ -8,41 +8,28 @@ By utilizing Literate Formalization, this repository contains the definitive Mar
 
 The verification engine is built as a local, offline toolchain with a codebase restricted entirely to standard, open-source libraries. The Python script operates without cloud dependencies or generative AI components, relying instead on a deterministic execution model designed solely to validate explicit, hardcoded mathematical rules against static Markdown files. The ultimate goal of this toolchain is to formally verify the correctness of the stated mathematics.
 
-## Quickstart
+## Setup & Development
+
+To clone, set up the development environment, and verify the project using the pre-commit workflow:
 
 ```bash
-# Clone and set up the environment
+# Clone the repository
 git clone https://github.com/ethanex8/aleph.git
 cd aleph
 
-# Install dependencies (requires uv or pip)
-# To install uv: curl -LsSf https://astral.sh/uv/install.sh | sh
+# Install dependencies (requires uv)
 uv pip install -e ".[dev]"
 
-# Install pre-commit hooks
-pre-commit install
+# Install the pre-commit hooks (one-time setup)
+python -m pre_commit install
 
-# Verify the entire book
-python -m tools verify
-
-# Format the entire book
-python -m tools format
-
-# Run the test suite
-python -m pytest
+# Run all checks manually to verify setup (formats, tests, type checks, and verifies the book)
+python -m pre_commit run --all-files
 ```
 
-## Authoring Protocol
+These checks run automatically on every `git commit` to ensure code quality and logical consistency.
 
-**Before committing any change to `book/`, always ensure pre-commit hooks are installed:**
-
-```bash
-pre-commit install
-```
-
-The build and tests must pass before any commit. Note that you MUST run the Python tests even if you are just modifying the Markdown (`.md`) files, because the end-to-end tests are tightly coupled to the mathematical content in the `book/` directory. They contain hardcoded assertions regarding specific file paths, total axiom counts, and theorem names. When refactoring the mathematical structure, you must update the corresponding e2e tests to match the new reality.
-
-If you add a new `.md` file, add it to [`Manifest.md`](book/Manifest.md) with its `imports` and `exports`. For a full list of system invariants checked during verification, see [Integrity Invariants](#integrity-invariants).
+If you add a new mathematical section `.md` file under `book/`, register it in [`Manifest.md`](book/Manifest.md) with its `imports` and `exports`. For a full list of invariants checked during verification, see [Integrity Invariants](#integrity-invariants).
 
 ## System Boundaries
 
