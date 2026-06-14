@@ -4,6 +4,9 @@ This document outlines the workflow, constraints, and pitfalls for AI agents (an
 
 Always check this document and the system design guidelines in [DESIGN.md](DESIGN.md) before making code changes or updating logic files.
 
+> [!IMPORTANT]
+> **Repository Setup Prerequisite:** If this is a fresh clone or a new environment (common for cloud agents), you **must** first complete the installation and pre-commit hook setup commands outlined in the [README.md Setup & Development](file:///c:/Users/erh50/Aleph/README.md#setup--development) section before making any modifications or attempting to run verification tools.
+
 ---
 
 ## 📖 System Design & Documentation Maintenance
@@ -77,14 +80,7 @@ To verify and style changes, execute the following commands in the workspace roo
     ```
 
 *   **Pre-commit Hooks:**
-    Install hooks (one-time setup):
-    ```bash
-    pre-commit install
-    ```
-    Run all hooks manually:
-    ```bash
-    pre-commit run --all-files
-    ```
+    For instructions on setting up and running the unified pre-commit hook suite, see the [README.md](file:///c:/Users/erh50/Aleph/README.md#setup--development) Setup & Development section.
 
 
 ---
