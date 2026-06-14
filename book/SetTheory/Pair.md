@@ -1,6 +1,7 @@
 # Axiom of Pair
 
-The Axiom of Pair states that for any two sets $A$ and $B$, there exists a set $C$ that contains exactly $A$ and $B$ as its elements.
+The Axiom of Pair states that for any two sets $A$ and $B$, there exists a set $C$ that contains
+exactly $A$ and $B$ as its elements.
 
 ## Pair Existence
 
@@ -34,7 +35,8 @@ qed
 
 ## The Pair Operation
 
-Now that we have proven existence and uniqueness, we can introduce the pair operation `{A, B}` directly.
+Now that we have proven existence and uniqueness, we can introduce the pair operation `{A, B}`
+directly.
 
 ```fol
 operation {A, B}:
@@ -45,7 +47,8 @@ uniqueness: PairUniqueness
 
 ## Pair Commutativity
 
-The pair operation is commutative, meaning that the order of the elements in the pair does not affect the set itself: $\{A, B\} = \{B, A\}$.
+The pair operation is commutative, meaning that the order of the elements in the pair does not
+affect the set itself: ${A, B} = {B, A}$.
 
 ```fol
 theorem PairCommutativity:
@@ -89,7 +92,7 @@ qed
 
 ## The Singleton Definition
 
-We define the singleton set $\{A\}$ directly as the pair containing $A$ twice.
+We define the singleton set ${A}$ directly as the pair containing $A$ twice.
 
 ```fol
 definition {A} = {A, A}

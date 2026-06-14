@@ -1,6 +1,8 @@
 # Aleph Table of Contents
 
-This is the central manifest for the Aleph book. The verifier uses this manifest to understand the structure of the topological module graph, validate imports and exports, and ensure that all files in the book are accounted for.
+This is the central manifest for the Aleph book. The verifier uses this manifest to understand the
+structure of the topological module graph, validate imports and exports, and ensure that all files
+in the book are accounted for.
 
 ## [SetTheory.Extensionality](SetTheory/Extensionality.md)
 

@@ -1,6 +1,7 @@
 # Axiom of Union
 
-The Axiom of Union states that for any set $A$, there exists a set $U$ containing all elements that belong to at least one element of $A$. This effectively "flattens" a set of sets.
+The Axiom of Union states that for any set $A$, there exists a set $U$ containing all elements that
+belong to at least one element of $A$. This effectively "flattens" a set of sets.
 
 ## Union Existence
 
@@ -45,8 +46,9 @@ uniqueness: UnionUniqueness
 
 ## Binary Union
 
-We can now define the binary union $A \cup B$ using the `Union` and `{,}` operations. With syntactic sugar `set_enum` (e.g. `{A, B, C}`), the parser automatically converts multi-element sets into binary unions under the hood: `{A, B} ∪ {C}`.
-
+We can now define the binary union $A \\cup B$ using the `Union` and `{,}` operations. With
+syntactic sugar `set_enum` (e.g. `{A, B, C}`), the parser automatically converts multi-element sets
+into binary unions under the hood: `{A, B} ∪ {C}`.
 
 ```fol
 theorem BinaryUnionExistence:
@@ -83,7 +85,8 @@ uniqueness: BinaryUnionUniqueness
 
 ## Binary Union Member
 
-**Theorem.** An element $x$ is in the binary union $A \cup B$ if and only if it is in $A$ or it is in $B$: $x \in A \cup B \iff (x \in A \lor x \in B)$.
+**Theorem.** An element $x$ is in the binary union $A \\cup B$ if and only if it is in $A$ or it is
+in $B$: $x \\in A \\cup B \\iff (x \\in A \\lor x \\in B)$.
 
 ```fol
 theorem BinaryUnionMember:

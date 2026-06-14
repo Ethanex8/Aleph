@@ -19,6 +19,8 @@ dev = [
     "ruff>=0.15.17",
     "pre-commit>=4.6.0",
     "mypy>=2.1.0",
+    "mdformat>=1.0.0",
+    "mdformat-pyproject>=0.1.1",
 ]
 
 [project.scripts]
@@ -68,3 +70,7 @@ convention = "google"
 python_version = "3.12"
 strict = true
 ignore_missing_imports = true
+
+[tool.mdformat]
+wrap = 100
+number = true

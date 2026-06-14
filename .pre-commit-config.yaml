@@ -12,6 +12,12 @@ repos:
         additional_dependencies: [lark, pyyaml, types-PyYAML]
         args: [--ignore-missing-imports]
         files: ^tools/
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 1.0.0
+    hooks:
+      - id: mdformat
+        additional_dependencies:
+          - mdformat-pyproject
   - repo: local
     hooks:
       - id: format-book

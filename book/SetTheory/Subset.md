@@ -1,8 +1,7 @@
 # Subset
 
-The subset relation is a foundational concept in set theory. A set $A$ is a
-**subset** of $B$ — written $A ⊆ B$ — if every element of $A$ is also
-an element of $B$.
+The subset relation is a foundational concept in set theory. A set $A$ is a **subset** of $B$ —
+written $A ⊆ B$ — if every element of $A$ is also an element of $B$.
 
 ## Definition
 
@@ -13,9 +12,11 @@ definition A ⊆ B:
 
 ## Reflexivity of Subset
 
-**Theorem.** Every set is a subset of itself: $A \subseteq A$.
+**Theorem.** Every set is a subset of itself: $A \\subseteq A$.
 
-To prove this, we just need to apply the definition of a subset. For any arbitrary set $A$, we must show that any element $x \in A$ implies $x \in A$. This is trivially true, and generalizing this over all $x$ gives us $A \subseteq A$.
+To prove this, we just need to apply the definition of a subset. For any arbitrary set $A$, we must
+show that any element $x \\in A$ implies $x \\in A$. This is trivially true, and generalizing this
+over all $x$ gives us $A \\subseteq A$.
 
 ```fol
 theorem SubsetReflexivity:
@@ -35,9 +36,9 @@ qed
 
 **Theorem.** If $A ⊆ B$ and $B ⊆ C$, then $A ⊆ C$.
 
-The proof proceeds by assuming both inclusions, then introducing an arbitrary
-element $w$ and tracing it from $A$ through $B$ into $C$ using the definition
-of subset and two applications of Modus Ponens.
+The proof proceeds by assuming both inclusions, then introducing an arbitrary element $w$ and
+tracing it from $A$ through $B$ into $C$ using the definition of subset and two applications of
+Modus Ponens.
 
 ```fol
 theorem SubsetTransitivity:
@@ -65,7 +66,9 @@ qed
 
 ## Antisymmetry of Subset
 
-**Theorem.** Two sets are equal if and only if they are subsets of each other. In this theorem we establish the forward direction (SubsetAntisymmetry): if $A \subseteq B$ and $B \subseteq A$, then $A = B$.
+**Theorem.** Two sets are equal if and only if they are subsets of each other. In this theorem we
+establish the forward direction (SubsetAntisymmetry): if $A \\subseteq B$ and $B \\subseteq A$, then
+$A = B$.
 
 ```fol
 theorem SubsetAntisymmetry:
@@ -92,7 +95,9 @@ qed
 
 **Theorem.** If $A = B$, then $A$ is a subset of $B$ and $B$ is a subset of $A$.
 
-This proof leverages the reflexivity of the subset relation. Since $A \subseteq A$ for any set $A$, if $A = B$, we can simply replace occurrences of $A$ with $B$ to show that $A \subseteq B$ and $B \subseteq A$.
+This proof leverages the reflexivity of the subset relation. Since $A \\subseteq A$ for any set $A$,
+if $A = B$, we can simply replace occurrences of $A$ with $B$ to show that $A \\subseteq B$ and $B
+\\subseteq A$.
 
 ```fol
 theorem EqualityImpliesSubsets:
@@ -113,7 +118,9 @@ qed
 
 **Theorem.** Two sets are equal if and only if they are subsets of each other.
 
-Combining our results from antisymmetry and equality, we can establish the full biconditional. By citing our previous theorems directly with composite universal instantiation, we arrive at the result concisely.
+Combining our results from antisymmetry and equality, we can establish the full biconditional. By
+citing our previous theorems directly with composite universal instantiation, we arrive at the
+result concisely.
 
 ```fol
 theorem EqualityIffSubsets:
