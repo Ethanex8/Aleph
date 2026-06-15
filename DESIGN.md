@@ -39,17 +39,19 @@ graph TD
 The codebase is split into two primary layers: `tools/parser` (extraction and parsing) and
 `tools/verifier` (scope management and proof evaluation).
 
-| Component | Source File(s) | Responsibility |
-| :--- | :--- | :--- |
-| **CLI & Commands** | [cli.py](tools/cli.py) | Centralized CLI for `verify` and `format`. |
-| **Fenced Extractor** | [extractor.py](tools/parser/extractor.py) | Extracts `fol` code blocks and tracks source line mapping. |
-| **Lark FOL Parser** | [fol_parser.py](tools/parser/fol_parser.py) | Tokenizes and parses FOL logic using [grammar.lark](tools/parser/grammar.lark). |
-| **AST Nodes** | [ast_nodes.py](tools/parser/ast_nodes.py) | Immutable dataclass representation of formulas and declarations. |
-| **AST Utils** | [ast_utils.py](tools/parser/ast_utils.py) | Tools for substitution, term replacement, and free variable analysis. |
-| **Manifest & DAG** | [manifest.py](tools/verifier/manifest.py) | Loads the topological build graph and resolves imports/exports. |
-| **Proof Context** | [context.py](tools/context.py) | Manages active symbols and logical assumption scopes. |
-| **Verifier Engine** | [verifier.py](tools/verifier/verifier.py) | Orchestrates declaration and proof step verification. |
-| **Inference Engine** | [inference/](tools/inference/) | Modules implementing mathematical rules of inference. |
+| Component | Source File(s) | Responsibility | | :--- | :--- | :--- | | **CLI & Commands** |
+[cli.py](tools/cli.py) | Centralized CLI for `verify` and `format`. | | **Fenced Extractor** |
+[extractor.py](tools/parser/extractor.py) | Extracts `fol` code blocks and tracks source line
+mapping. | | **Lark FOL Parser** | [fol_parser.py](tools/parser/fol_parser.py) | Tokenizes and
+parses FOL logic using [grammar.lark](tools/parser/grammar.lark). | | **AST Nodes** |
+[ast_nodes.py](tools/parser/ast_nodes.py) | Immutable dataclass representation of formulas and
+declarations. | | **AST Utils** | [ast_utils.py](tools/parser/ast_utils.py) | Tools for
+substitution, term replacement, and free variable analysis. | | **Manifest & DAG** |
+[manifest.py](tools/verifier/manifest.py) | Loads the topological build graph and resolves
+imports/exports. | | **Proof Context** | [context.py](tools/context.py) | Manages active symbols and
+logical assumption scopes. | | **Verifier Engine** | [verifier.py](tools/verifier/verifier.py) |
+Orchestrates declaration and proof step verification. | | **Inference Engine** |
+[inference/](tools/inference/) | Modules implementing mathematical rules of inference. |
 
 ## 3. Verification Mechanics
 
@@ -107,18 +109,19 @@ Root Scope (Depth 1)
 
 ## 5. Inference Rules Mapping
 
-| Module | Rules |
-| :--- | :--- |
-| **[propositional.py](tools/inference/propositional.py)** | `Hypothesis`, `MP`, `MT`, `DS`, `AndIntro`, `AndElim`, `OrIntro`, `OrElim`, `OrCases`, `OrIdem`, `DNE`, `DNI`, `RAA`, `Vacuous`, `IffIntro`, `IffElim`, `IffMP`, `IffMT`, `IffTrans`, `Contradiction` |
-| **[quantifier.py](tools/inference/quantifier.py)** | `UI`, `UG`, `ExistsIntro`, `ExistsElim` |
-| **[equality.py](tools/inference/equality.py)** | `EqIntro`, `EqReplace`, `EqReplaceAll` |
-| **[definitions.py](tools/inference/definitions.py)** | `Def` |
-| **[references.py](tools/inference/references.py)** | `Axiom`, `Theorem`, `Constant`, `Operation`, `Schema` |
+| Module | Rules | | :--- | :--- | | **[propositional.py](tools/inference/propositional.py)** |
+`Hypothesis`, `MP`, `MT`, `DS`, `AndIntro`, `AndElim`, `OrIntro`, `OrElim`, `OrCases`, `OrIdem`,
+`DNE`, `DNI`, `RAA`, `Vacuous`, `IffIntro`, `IffElim`, `IffMP`, `IffMT`, `IffTrans`, `Contradiction`
+| | **[quantifier.py](tools/inference/quantifier.py)** | `UI`, `UG`, `ExistsIntro`, `ExistsElim` | |
+**[equality.py](tools/inference/equality.py)** | `EqIntro`, `EqReplace`, `EqReplaceAll` | |
+**[definitions.py](tools/inference/definitions.py)** | `Def` | |
+**[references.py](tools/inference/references.py)** | `Axiom`, `Theorem`, `Constant`, `Operation`,
+`Schema` |
 
 ## 6. Maintenance Protocol
 
-> [!IMPORTANT]
-> This document must be updated when changing:
+> [!IMPORTANT] This document must be updated when changing:
+>
 > 1. **Grammar or AST**: Update the Architecture & Components section.
 > 2. **Inference Rules**: Update the Inference Rules Mapping.
 > 3. **Verification Lifecycle**: Update the Core Verification Logic section.

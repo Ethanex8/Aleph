@@ -55,8 +55,8 @@ mathematical machinery across four major epochs:
 - **Epoch I: Foundations**: FOL deduction, ZFC Axiomatization, Set Theory (Relations, Functions,
   Ordinals).
 - **Epoch II: Algebraic Structures**: Groups, Rings, Fields, Vector Spaces, and Linear Algebra.
-- **Epoch III: Continuum & Topology**: Construction of Number Systems ($\mathbb{R}$, $\mathbb{C}$),
-  General Topology, and Real Analysis.
+- **Epoch III: Continuum & Topology**: Construction of Number Systems ($\\mathbb{R}$,
+  $\\mathbb{C}$), General Topology, and Real Analysis.
 - **Epoch IV: Mathematical Physics**: Differential Geometry (Manifolds, Exterior Calculus) and
   Operator Theory (Hilbert Spaces).
 

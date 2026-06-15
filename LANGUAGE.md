@@ -82,37 +82,30 @@ The verifier enforces strict 4-space indentation for logical scopes:
 
 Every line must end with a bracketed justification `[Rule Arg1, Arg2, ...]`.
 
-| Category | Rule | Tag | Description |
-| :--- | :--- | :--- | :--- |
-| **Propositional** | Hypothesis | `[Hypothesis]` | Introduces assumption or arbitrary variable. |
-| | Modus Ponens | `[MP i, j]` | From `P ⟹ Q` (i) and `P` (j), derive `Q`. |
-| | Modus Tollens | `[MT i, j]` | From `P ⟹ Q` (i) and `¬Q` (j), derive `¬P`. |
-| | Disj. Syllogism | `[DS i, j]` | From `P ∨ Q` (i) and `¬P` (j), derive `Q`. |
-| | Conjunction | `[AndIntro i, j]` | From `P` (i) and `Q` (j), derive `P ∧ Q`. |
-| | | `[AndElim i, L/R]` | From `P ∧ Q` (i), derive `P` (L) or `Q` (R). |
-| | Disjunction | `[OrIntro i, L/R]` | From `P` (i), derive `P ∨ Q` (L) or `Q ∨ P` (R). |
-| | Negation | `[DNE i]` / `[DNI i]` | Double Negation Elimination / Introduction. |
-| | | `[RAA i, j, k]` | Reductio Ad Absurdum. |
-| | | `[Contradiction i, j]` | Derive any formula from a contradiction. |
-| | Implication | `[ImplIntro i, j]` | Discharge assumption `P` (i) to conclude `P ⟹ Q` (j). |
-| | | `[Vacuous i]` | From `¬P` (i), derive `P ⟹ Q`. |
-| | Biconditional | `[IffIntro i, j]` | From `P ⟹ Q` (i) and `Q ⟹ P` (j), derive `P ⟺ Q`. |
-| | | `[IffElim i, L/R]` | From `P ⟺ Q` (i), derive `P ⟹ Q` (L) or `Q ⟹ P` (R). |
-| | | `[IffMP i, j]` | From `P ⟺ Q` (i) and `P` (j), derive `Q`. |
-| | | `[IffMT i, j]` | From `P ⟺ Q` (i) and `¬P` (j), derive `¬Q`. |
-| **Quantifier** | Universal | `[UI i, t]` | Instantiation: `∀x φ(x)` (i) → `φ(t)`. |
-| | | `[UG i, x, ...]` | Generalization: `φ(c)` (i) → `∀x φ(x)`. |
-| | Existential | `[ExistsIntro i, t, x]` | Introduction: `φ(t)` (i) → `∃x φ(x)`. |
-| | | `[ExistsElim i, j, c]` | Elimination: `∃x φ(x)` (i) and `φ(c) ⟹ Q` (j) → `Q`. |
-| **Equality** | Equality | `[EqIntro]` | Derive `t = t`. |
-| | | `[EqReplace i, j]` | Substitute one occurrence of `t` with `s` using `t = s`. |
-| | | `[EqReplaceAll i, j]` | Substitute all occurrences of `t` with `s`. |
-| **References** | Citation | `[Axiom Name, ...]` | Cite a global symbol. |
-| | | `[Theorem Name, ...]` | Supports trailing terms for UI and integers for MP. |
-| | | `[Constant Name, ...]` | UI is applied before MP. |
-| | | `[Operation Name, ...]` | |
-| | | `[Schema Name, φ := F]` | Instantiation of a schema with formula `F`. |
-| **Definitions** | Expansion | `[Def Name, i]` | Expand/contract named definition `Name` in line `i`. |
+| Category | Rule | Tag | Description | | :--- | :--- | :--- | :--- | | **Propositional** |
+Hypothesis | `[Hypothesis]` | Introduces assumption or arbitrary variable. | | | Modus Ponens |
+`[MP i, j]` | From `P ⟹ Q` (i) and `P` (j), derive `Q`. | | | Modus Tollens | `[MT i, j]` | From
+`P ⟹ Q` (i) and `¬Q` (j), derive `¬P`. | | | Disj. Syllogism | `[DS i, j]` | From `P ∨ Q` (i) and
+`¬P` (j), derive `Q`. | | | Conjunction | `[AndIntro i, j]` | From `P` (i) and `Q` (j), derive
+`P ∧ Q`. | | | | `[AndElim i, L/R]` | From `P ∧ Q` (i), derive `P` (L) or `Q` (R). | | | Disjunction
+| `[OrIntro i, L/R]` | From `P` (i), derive `P ∨ Q` (L) or `Q ∨ P` (R). | | | Negation | `[DNE i]` /
+`[DNI i]` | Double Negation Elimination / Introduction. | | | | `[RAA i, j, k]` | Reductio Ad
+Absurdum. | | | | `[Contradiction i, j]` | Derive any formula from a contradiction. | | |
+Implication | `[ImplIntro i, j]` | Discharge assumption `P` (i) to conclude `P ⟹ Q` (j). | | | |
+`[Vacuous i]` | From `¬P` (i), derive `P ⟹ Q`. | | | Biconditional | `[IffIntro i, j]` | From
+`P ⟹ Q` (i) and `Q ⟹ P` (j), derive `P ⟺ Q`. | | | | `[IffElim i, L/R]` | From `P ⟺ Q` (i), derive
+`P ⟹ Q` (L) or `Q ⟹ P` (R). | | | | `[IffMP i, j]` | From `P ⟺ Q` (i) and `P` (j), derive `Q`. | | |
+| `[IffMT i, j]` | From `P ⟺ Q` (i) and `¬P` (j), derive `¬Q`. | | **Quantifier** | Universal |
+`[UI i, t]` | Instantiation: `∀x φ(x)` (i) → `φ(t)`. | | | | `[UG i, x, ...]` | Generalization:
+`φ(c)` (i) → `∀x φ(x)`. | | | Existential | `[ExistsIntro i, t, x]` | Introduction: `φ(t)` (i) →
+`∃x φ(x)`. | | | | `[ExistsElim i, j, c]` | Elimination: `∃x φ(x)` (i) and `φ(c) ⟹ Q` (j) → `Q`. | |
+**Equality** | Equality | `[EqIntro]` | Derive `t = t`. | | | | `[EqReplace i, j]` | Substitute one
+occurrence of `t` with `s` using `t = s`. | | | | `[EqReplaceAll i, j]` | Substitute all occurrences
+of `t` with `s`. | | **References** | Citation | `[Axiom Name, ...]` | Cite a global symbol. | | | |
+`[Theorem Name, ...]` | Supports trailing terms for UI and integers for MP. | | | |
+`[Constant Name, ...]` | UI is applied before MP. | | | | `[Operation Name, ...]` | | | | |
+`[Schema Name, φ := F]` | Instantiation of a schema with formula `F`. | | **Definitions** |
+Expansion | `[Def Name, i]` | Expand/contract named definition `Name` in line `i`. |
 
 ## Grammar & Operators
 

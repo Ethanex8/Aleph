@@ -4,8 +4,8 @@ This document outlines the workflow, constraints, and critical rules for AI agen
 
 ## 🛠️ Setup & Commands
 
-> [!IMPORTANT]
-> **Prerequisite:** You must complete the setup in [README.md](README.md) before running tools.
+> [!IMPORTANT] **Prerequisite:** You must complete the setup in [README.md](README.md) before
+> running tools.
 
 - **Verify Book**: `python -m tools verify`
 - **Run Tests**: `python -m pytest`
@@ -22,6 +22,7 @@ This document outlines the workflow, constraints, and critical rules for AI agen
 ## ⚠️ Critical Constraints
 
 ### Naming & Registration
+
 - **PascalCase**: All directories, files, and identifiers (Axioms, Theorems, etc.) must use
   `PascalCase`.
 - **Manifest**: New `.md` sections must be registered in [Manifest.md](book/Manifest.md) with
@@ -29,6 +30,7 @@ This document outlines the workflow, constraints, and critical rules for AI agen
 - **Imports**: Must be fully qualified (e.g., `SetTheory.Extensionality.Extensionality`).
 
 ### Logic & Indentation
+
 - **Header Indentation**: Keywords (`axiom`, `theorem`, `proof:`, etc.) must have **0 indentation**.
 - **Body Indentation**: Claims immediately following headers must have **4 spaces**.
 - **Proof Scoping**: Each `Let` or `Assume` opens one scope (+4 spaces). Closing rules (`UG`,
@@ -37,6 +39,7 @@ This document outlines the workflow, constraints, and critical rules for AI agen
   You must first load it: `1. P [Axiom AxiomName]`.
 
 ### Prose & Formatting
+
 - **Unicode Math**: Use `⊆`, `∀`, `∈`, `⟹` in prose. Avoid LaTeX macros (e.g., `\forall`).
 - **No Wrapped Math**: Do not nest `$math$` inside `*italics*` or `**bold**`.
 - **Identifier Accuracy**: Prose references must match the exact PascalCase identifier.
