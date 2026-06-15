@@ -1,167 +1,47 @@
 # Aleph Agent Instructions
 
-This document outlines the workflow, constraints, and pitfalls for AI agents (and human
-contributors) working on the **Aleph** repository.
+This document outlines the workflow, constraints, and critical rules for AI agents and contributors.
 
-Always check this document and the system design guidelines in [DESIGN.md](DESIGN.md) before making
-code changes or updating logic files.
+## 🛠️ Setup & Commands
 
-> [!IMPORTANT] **Repository Setup Prerequisite:** If this is a fresh clone or a new environment
-> (common for cloud agents), you **must** first complete the installation and pre-commit hook setup
-> commands outlined in the \[README.md Setup &
-> Development\](file:///c:/Users/erh50/Aleph/README.md#setup--development) section before making any
-> modifications or attempting to run verification tools.
+> [!IMPORTANT]
+> **Prerequisite:** You must complete the setup in [README.md](README.md) before running tools.
 
-______________________________________________________________________
-
-## 📖 System Design & Documentation Maintenance
-
-Refer to [DESIGN.md](DESIGN.md) for a comprehensive overview of the verifier's architecture,
-pipeline, data structures, and mathematical inference rules.
-
-> [!IMPORTANT] If you make any core architecture modifications (such as changing grammar rules,
-> adding mathematical inference rules, or altering scope/context handling logic) or change system
-> behaviors, you **must** update all relevant documentation Markdown files (such as
-> [DESIGN.md](DESIGN.md), [LANGUAGE.md](LANGUAGE.md), and [AGENTS.md](AGENTS.md)) accordingly to
-> reflect the changes.
-
-______________________________________________________________________
+- **Verify Book**: `python -m tools verify`
+- **Run Tests**: `python -m pytest`
+- **Format Logic**: `python -m tools format`
+- **Lint/Format Python**: `python -m ruff check --fix .` and `python -m ruff format .`
+- **Type Check**: `python -m mypy tools/`
 
 ## 🔄 Contribution Workflow
 
-Direct pushes to the `main` branch are disabled. All modifications to the repository must follow
-this workflow:
+1. Create a branch for changes.
+2. Run all local checks (verify, test, lint, format).
+3. Submit a Pull Request. CI must pass before merging.
 
-1. Create a new branch for your changes.
-2. Run all local checks (see Verification & Testing Commands below) to ensure your proofs and code
-   are valid.
-3. Submit a Pull Request targeting the `main` branch.
-4. The automated CI pipeline will run the Aleph verifier, tests, and linters. All status checks must
-   pass before the Pull Request can be merged.
+## ⚠️ Critical Constraints
 
-______________________________________________________________________
+### Naming & Registration
+- **PascalCase**: All directories, files, and identifiers (Axioms, Theorems, etc.) must use
+  `PascalCase`.
+- **Manifest**: New `.md` sections must be registered in [Manifest.md](book/Manifest.md) with
+  `imports` and `exports`.
+- **Imports**: Must be fully qualified (e.g., `SetTheory.Extensionality.Extensionality`).
 
-## 🛠️ Verification & Testing Commands
+### Logic & Indentation
+- **Header Indentation**: Keywords (`axiom`, `theorem`, `proof:`, etc.) must have **0 indentation**.
+- **Body Indentation**: Claims immediately following headers must have **4 spaces**.
+- **Proof Scoping**: Each `Let` or `Assume` opens one scope (+4 spaces). Closing rules (`UG`,
+  `ImplIntro`, `ExistsElim`) must match the opener's column.
+- **Axiom Citation**: You cannot instantiate an axiom by name in a rule (e.g., `[UI AxiomName, x]`).
+  You must first load it: `1. P [Axiom AxiomName]`.
 
-To verify and style changes, execute the following commands in the workspace root:
+### Prose & Formatting
+- **Unicode Math**: Use `⊆`, `∀`, `∈`, `⟹` in prose. Avoid LaTeX macros (e.g., `\forall`).
+- **No Wrapped Math**: Do not nest `$math$` inside `*italics*` or `**bold**`.
+- **Identifier Accuracy**: Prose references must match the exact PascalCase identifier.
 
-- **Verify the Mathematical Book:**
+## 📖 Documentation Maintenance
 
-  ```bash
-  python -m tools verify
-  ```
-
-- **Run the Test Suite:**
-
-  ```bash
-  python -m pytest
-  ```
-
-  > [!IMPORTANT] While the end-to-end build test asserts lower-bound counts (meaning new
-  > files/axioms/theorems won't break the global total checks), specific tests still verify theorem
-  > existence and stand-alone file contexts. You **must** run `python -m pytest` when modifying the
-  > math structure to ensure everything passes.
-
-- **Format Proofs (FOL Blocks):**
-
-  ```bash
-  python -m tools format
-  ```
-
-  To only check/validate formatting without modifying files (e.g. in CI pipelines):
-
-  ```bash
-  python -m tools format --check
-  ```
-
-- **Lint and Format Python Code (Ruff):** To format Python files:
-
-  ```bash
-  python -m ruff format .
-  ```
-
-  To check for lint violations:
-
-  ```bash
-  python -m ruff check .
-  ```
-
-  To automatically fix lint violations:
-
-  ```bash
-  python -m ruff check --fix .
-  ```
-
-- **Static Type Checking (mypy):**
-
-  ```bash
-  python -m mypy tools/
-  ```
-
-- **Run Tests with Coverage:**
-
-  ```bash
-  python -m pytest -v --cov=tools --cov-report=term-missing
-  ```
-
-- **Pre-commit Hooks:** For instructions on setting up and running the unified pre-commit hook
-  suite, see the \[README.md\](file:///c:/Users/erh50/Aleph/README.md#setup--development) Setup &
-  Development section.
-
-______________________________________________________________________
-
-## 📚 Book & Manifest Architecture
-
-All files under `book/` are managed via a Directed Acyclic Graph (DAG) specified in
-\[Manifest.md\](file:///c:/Users/erh50/Aleph/book/Manifest.md).
-
-1. **Strict PascalCase Naming:** Every directory, file, and mathematical identifier (Axioms,
-   Theorems, Definitions) must strictly use `PascalCase`.
-2. **Manifest Registration:** If you create a new `.md` section under `book/`, you **must** register
-   it in \[Manifest.md\](file:///c:/Users/erh50/Aleph/book/Manifest.md) along with its exact
-   `imports` and `exports`. Orphaned files will fail verification.
-3. **Imports/Exports:**
-   - `exports` are defined as bare identifiers (e.g., `Extensionality`).
-   - `imports` must be fully qualified (e.g., `SetTheory.Extensionality.Extensionality`).
-   - Self-references within the same file do not need to be imported.
-
-______________________________________________________________________
-
-## ✍️ Markdown & LaTeX Prose Guidelines
-
-When authoring pedagogical prose in math files, follow these formatting guidelines:
-
-1. **Use Unicode Math Symbols:** Prefer Unicode characters (e.g., `⊆`, `∀`, `∈`, `⟹`) instead of
-   LaTeX macros (e.g., `\subseteq`, `\forall`) inside prose math blocks (like `$A ⊆ B$`). Markdown
-   parsers can consume backslashes, breaking LaTeX rendering. Unicode symbols match the logic blocks
-   and render reliably.
-2. **Avoid Wrapping Math in Emphasis:** Do not nest inline math directly inside markdown italics or
-   bold blocks (e.g., avoid `*If $A ⊆ B$ ...*`). Apply emphasis only to the surrounding text words
-   instead.
-3. **Strict Identifier Spelling:** All references to mathematical terms in prose must match the
-   exact PascalCase spelling of the identifier defined in the `fol` blocks.
-
-______________________________________________________________________
-
-## 🔍 Logic & Proof Rules
-
-When writing or editing fenced logic blocks (```` ```fol ````), respect the parser constraints
-defined in \[LANGUAGE.md\](file:///c:/Users/erh50/Aleph/LANGUAGE.md):
-
-1. **Explicit Axiom Loading:** The `UI` (Universal Instantiation) rule and other rules expect a
-   proof line reference (e.g., `[UI 16, A]`). You cannot directly instantiate an axiom by name
-   (e.g., `[UI Extensionality, A]`). You must first load the axiom onto a standalone proof line
-   using `[Axiom Extensionality]` and then reference that line number.
-2. **Isolated Logic Context:** The verifier only parses content within `fol` blocks and does not
-   inherit any variables or assumptions declared in the surrounding markdown prose.
-3. **Inference Rules:** The verifier only supports the rules explicitly defined in
-   \[tools/inference/\](file:///c:/Users/erh50/Aleph/tools/inference/). If a mathematical proof
-   requires a new inference pattern, the verifier's Python code must be updated first.
-4. **Strict Proof Indentation:** Proof lines inside `fol` blocks must be indented strictly according
-   to their logical scoping depth (4 spaces per scope level). `Let` statements and `Assume`
-   statements open one new scope level each. Scope-closing rules (`UG`, `ImplIntro`, `ExistsElim`)
-   sit at the parent scope's indentation level (sharing the column of their opener). Mismatched
-   indentation causes a verifier parse error.
-5. **Header and Body Indentation:** Top-level declaration headers (`axiom`, `theorem`, `proof:`,
-   etc.) must have **zero** indentation. The formulas immediately following these headers must have
-   exactly **4 spaces** of indentation.
+If you modify the verifier's architecture, grammar, or inference rules, you **must** update
+[DESIGN.md](DESIGN.md) and [LANGUAGE.md](LANGUAGE.md) accordingly.
