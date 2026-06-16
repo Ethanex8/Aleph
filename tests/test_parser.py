@@ -37,7 +37,9 @@ class TestFormulaParser:
 
     def test_negation(self):
         f = parse_formula("¬(x ∈ A)")
-        assert f == Not(operand=InfixPredicate(left=Variable("x"), operator="∈", right=Variable("A")))
+        assert f == Not(
+            operand=InfixPredicate(left=Variable("x"), operator="∈", right=Variable("A"))
+        )
 
     def test_notin(self):
         f = parse_formula("x ∉ A")

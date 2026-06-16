@@ -419,7 +419,9 @@ class TestNewInference:
         ctx.proof_lines[1] = And(InfixPredicate(a, "=", b), InfixPredicate(b, "=", c))
 
         # Test UI + UI + UI + MP
-        line = ProofLine(2, InfixPredicate(a, "=", c), Justification("Axiom", ("Trans", a, b, c, 1)))
+        line = ProofLine(
+            2, InfixPredicate(a, "=", c), Justification("Axiom", ("Trans", a, b, c, 1))
+        )
         assert apply_rule(ctx, line) == InfixPredicate(a, "=", c)
 
     def test_composite_theorem(self, ctx):

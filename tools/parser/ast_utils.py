@@ -62,7 +62,9 @@ def build_req_uniqueness(name: str, params: tuple[str, ...], formula: Formula) -
             variable="__d",
             body=Implies(
                 antecedent=And(left=phi_c, right=phi_d),
-                consequent=InfixPredicate(left=Variable("__c"), operator="=", right=Variable("__d")),
+                consequent=InfixPredicate(
+                    left=Variable("__c"), operator="=", right=Variable("__d")
+                ),
             ),
         ),
     )
