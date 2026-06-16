@@ -11,14 +11,12 @@ from collections.abc import Callable
 from tools.parser.ast_nodes import (
     And,
     Biconditional,
-    Equality,
     Exists,
     ForAll,
     FuncApp,
     Implies,
     InfixPredicate,
     InfixTerm,
-    Membership,
     Node,
     Not,
     Or,
@@ -74,12 +72,8 @@ class FormulaTransformer:
                 return self.transform_Predicate(formula)
             case SchemaApp():
                 return self.transform_SchemaApp(formula)
-            case Membership():
-                return self.transform_Membership(formula)
             case InfixPredicate():
                 return self.transform_InfixPredicate(formula)
-            case Equality():
-                return self.transform_Equality(formula)
             case Not():
                 return self.transform_Not(formula)
             case And():
@@ -137,14 +131,6 @@ class FormulaTransformer:
             return node
         return SchemaApp(name=node.name, args=new_args)  # type: ignore[arg-type]
 
-    def transform_Membership(self, node: Membership) -> Node:
-        """Transform a Membership formula node, recursively transforming element and set terms."""
-        new_element = self.transform(node.element)
-        new_set = self.transform(node.set_)
-        if new_element == node.element and new_set == node.set_:
-            return node
-        return Membership(element=new_element, set_=new_set)  # type: ignore[arg-type]
-
     def transform_InfixPredicate(self, node: InfixPredicate) -> Node:
         """Transform an InfixPredicate formula node, recursively transforming left and right terms."""
         new_left = self.transform(node.left)
@@ -152,14 +138,6 @@ class FormulaTransformer:
         if new_left == node.left and new_right == node.right:
             return node
         return InfixPredicate(left=new_left, operator=node.operator, right=new_right)  # type: ignore[arg-type]
-
-    def transform_Equality(self, node: Equality) -> Node:
-        """Transform an Equality formula node, recursively transforming left and right terms."""
-        new_left = self.transform(node.left)
-        new_right = self.transform(node.right)
-        if new_left == node.left and new_right == node.right:
-            return node
-        return Equality(left=new_left, right=new_right)  # type: ignore[arg-type]
 
     def transform_Not(self, node: Not) -> Node:
         """Transform a Not negation formula node, recursively transforming the operand."""

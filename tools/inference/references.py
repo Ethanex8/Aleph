@@ -12,7 +12,6 @@ from tools.inference.core import inference_rule
 from tools.parser.ast_nodes import (
     And,
     Biconditional,
-    Equality,
     Exists,
     ForAll,
     Formula,
@@ -20,7 +19,6 @@ from tools.parser.ast_nodes import (
     Implies,
     InfixPredicate,
     InfixTerm,
-    Membership,
     Node,
     Not,
     Or,
@@ -85,16 +83,10 @@ def _try_match(
                     and all(match_inner(ta, ga) for ta, ga in zip(a1, a2, strict=True))
                 )
 
-            case Membership(element=e1, set_=s1), Membership(element=e2, set_=s2):
-                return match_inner(e1, e2) and match_inner(s1, s2)
-
             case InfixPredicate(left=l1, operator=op1, right=r1), InfixPredicate(
                 left=l2, operator=op2, right=r2
             ):
                 return op1 == op2 and match_inner(l1, l2) and match_inner(r1, r2)
-
-            case Equality(left=l1, right=r1), Equality(left=l2, right=r2):
-                return match_inner(l1, l2) and match_inner(r1, r2)
 
             case Not(operand=o1), Not(operand=o2):
                 return match_inner(o1, o2)

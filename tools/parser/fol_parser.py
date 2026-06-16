@@ -18,7 +18,6 @@ from tools.parser.ast_nodes import (
     AxiomDecl,
     Biconditional,
     DefinitionDecl,
-    Equality,
     Exists,
     ForAll,
     Formula,
@@ -27,7 +26,6 @@ from tools.parser.ast_nodes import (
     InfixPredicate,
     InfixTerm,
     Justification,
-    Membership,
     Not,
     OperationDecl,
     Or,
@@ -116,7 +114,7 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         name, params = signature
         # Reconstruct LHS formula
         lhs: Formula
-        if name in {"⊆", "⊂", "≈", "≅", "∼", "≃", "≤", "≥", "<", ">", "∉", "≠"}:
+        if name in {"⊆", "⊂", "≈", "≅", "∼", "≃", "≤", "≥", "<", ">", "∉", "≠", "=", "∈"}:
             lhs = InfixPredicate(left=Variable(params[0]), operator=name, right=Variable(params[1]))
         else:
             lhs = Predicate(name=name, args=tuple(Variable(p) for p in params))
@@ -139,7 +137,7 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         else:
             lhs = FuncApp(name=name, args=tuple(Variable(p) for p in params))
 
-        full_formula: Formula = Equality(left=lhs, right=term)
+        full_formula: Formula = InfixPredicate(left=lhs, operator="=", right=term)
         full_formula = wrap_forall(full_formula, list(params))
 
         return DefinitionDecl(name=name, formula=full_formula)
@@ -275,17 +273,9 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         """Construct a SchemaApp application node over terms."""
         return SchemaApp(name=str(name), args=tuple(term_list))
 
-    def membership(self, element: Term, _op: Any, set_: Term) -> Membership:
-        """Construct a Membership (element in set) formula node."""
-        return Membership(element=element, set_=set_)
-
     def infix_predicate(self, left: Term, op: Token, right: Term) -> InfixPredicate:
         """Construct an InfixPredicate formula node (e.g. left subsetEq right)."""
         return InfixPredicate(left=left, operator=str(op), right=right)
-
-    def equality(self, left: Term, right: Term) -> Equality:
-        """Construct an Equality (left = right) formula node."""
-        return Equality(left=left, right=right)
 
     def term_list(self, *terms: Any) -> list[Any]:
         """Assemble terms into a list."""
