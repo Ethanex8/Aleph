@@ -16,13 +16,11 @@ from tools.inference import (
 from tools.parser.ast_nodes import (
     And,
     Biconditional,
-    Equality,
     ForAll,
     FuncApp,
     Implies,
     InfixPredicate,
     Justification,
-    Membership,
     Not,
     Or,
     ProofLine,
@@ -40,8 +38,8 @@ def ctx():
 class TestModusPonens:
     def test_valid_mp(self, ctx):
         # Establish: line 1 = P ⟹ Q, line 2 = P
-        p = Membership(Variable("x"), Variable("A"))
-        q = Membership(Variable("x"), Variable("B"))
+        p = InfixPredicate(Variable("x"), "∈", Variable("A"))
+        q = InfixPredicate(Variable("x"), "∈", Variable("B"))
         ctx.proof_lines[1] = Implies(antecedent=p, consequent=q)
         ctx.proof_lines[2] = p
 
@@ -50,8 +48,8 @@ class TestModusPonens:
         assert result == q
 
     def test_mp_reversed_order(self, ctx):
-        p = Membership(Variable("x"), Variable("A"))
-        q = Membership(Variable("x"), Variable("B"))
+        p = InfixPredicate(Variable("x"), "∈", Variable("A"))
+        q = InfixPredicate(Variable("x"), "∈", Variable("B"))
         ctx.proof_lines[1] = p
         ctx.proof_lines[2] = Implies(antecedent=p, consequent=q)
 
@@ -60,9 +58,9 @@ class TestModusPonens:
         assert result == q
 
     def test_mp_wrong_antecedent(self, ctx):
-        p = Membership(Variable("x"), Variable("A"))
-        q = Membership(Variable("x"), Variable("B"))
-        r = Membership(Variable("y"), Variable("C"))
+        p = InfixPredicate(Variable("x"), "∈", Variable("A"))
+        q = InfixPredicate(Variable("x"), "∈", Variable("B"))
+        r = InfixPredicate(Variable("y"), "∈", Variable("C"))
         ctx.proof_lines[1] = Implies(antecedent=p, consequent=q)
         ctx.proof_lines[2] = r  # wrong antecedent
 
@@ -73,8 +71,8 @@ class TestModusPonens:
 
 class TestAndElim:
     def test_elim_left(self, ctx):
-        p = Membership(Variable("x"), Variable("A"))
-        q = Membership(Variable("x"), Variable("B"))
+        p = InfixPredicate(Variable("x"), "∈", Variable("A"))
+        q = InfixPredicate(Variable("x"), "∈", Variable("B"))
         ctx.proof_lines[1] = And(left=p, right=q)
 
         line = ProofLine(number=2, formula=p, justification=Justification("AndElim", (1, "Left")))
@@ -82,8 +80,8 @@ class TestAndElim:
         assert result == p
 
     def test_elim_right(self, ctx):
-        p = Membership(Variable("x"), Variable("A"))
-        q = Membership(Variable("x"), Variable("B"))
+        p = InfixPredicate(Variable("x"), "∈", Variable("A"))
+        q = InfixPredicate(Variable("x"), "∈", Variable("B"))
         ctx.proof_lines[1] = And(left=p, right=q)
 
         line = ProofLine(number=2, formula=q, justification=Justification("AndElim", (1, "Right")))
@@ -91,7 +89,7 @@ class TestAndElim:
         assert result == q
 
     def test_elim_non_conjunction(self, ctx):
-        ctx.proof_lines[1] = Membership(Variable("x"), Variable("A"))
+        ctx.proof_lines[1] = InfixPredicate(Variable("x"), "∈", Variable("A"))
         line = ProofLine(
             number=2, formula=None, justification=Justification("AndElim", (1, "Left"))
         )
@@ -101,8 +99,8 @@ class TestAndElim:
 
 class TestAndIntro:
     def test_valid(self, ctx):
-        p = Membership(Variable("x"), Variable("A"))
-        q = Membership(Variable("x"), Variable("B"))
+        p = InfixPredicate(Variable("x"), "∈", Variable("A"))
+        q = InfixPredicate(Variable("x"), "∈", Variable("B"))
         ctx.proof_lines[1] = p
         ctx.proof_lines[2] = q
 
@@ -116,33 +114,33 @@ class TestAndIntro:
 class TestUniversalInstantiation:
     def test_valid_ui(self, ctx):
         # ∀x (x ∈ A) → substitute x with w → w ∈ A
-        body = Membership(Variable("x"), Variable("A"))
+        body = InfixPredicate(Variable("x"), "∈", Variable("A"))
         ctx.proof_lines[1] = ForAll(variable="x", body=body)
 
         line = ProofLine(
             number=2,
-            formula=Membership(Variable("w"), Variable("A")),
+            formula=InfixPredicate(Variable("w"), "∈", Variable("A")),
             justification=Justification("UI", (1, Variable("w"))),
         )
         result = apply_universal_instantiation(ctx, line)
-        assert result == Membership(Variable("w"), Variable("A"))
+        assert result == InfixPredicate(Variable("w"), "∈", Variable("A"))
 
     def test_valid_multi_ui(self, ctx):
         # ∀x ∀y (x ∈ y) → substitute x with w, y with z → w ∈ z
-        inner_body = Membership(Variable("x"), Variable("y"))
+        inner_body = InfixPredicate(Variable("x"), "∈", Variable("y"))
         body = ForAll(variable="y", body=inner_body)
         ctx.proof_lines[1] = ForAll(variable="x", body=body)
 
         line = ProofLine(
             number=2,
-            formula=Membership(Variable("w"), Variable("z")),
+            formula=InfixPredicate(Variable("w"), "∈", Variable("z")),
             justification=Justification("UI", (1, Variable("w"), Variable("z"))),
         )
         result = apply_universal_instantiation(ctx, line)
-        assert result == Membership(Variable("w"), Variable("z"))
+        assert result == InfixPredicate(Variable("w"), "∈", Variable("z"))
 
     def test_ui_non_universal(self, ctx):
-        ctx.proof_lines[1] = Membership(Variable("x"), Variable("A"))
+        ctx.proof_lines[1] = InfixPredicate(Variable("x"), "∈", Variable("A"))
         line = ProofLine(
             number=2, formula=None, justification=Justification("UI", (1, Variable("w")))
         )
@@ -150,7 +148,7 @@ class TestUniversalInstantiation:
             apply_universal_instantiation(ctx, line)
 
     def test_multi_ui_insufficient_quantifiers(self, ctx):
-        body = Membership(Variable("x"), Variable("A"))
+        body = InfixPredicate(Variable("x"), "∈", Variable("A"))
         ctx.proof_lines[1] = ForAll(variable="x", body=body)
         # Trying to instantiate two variables but we only have one quantifier
         line = ProofLine(
@@ -169,7 +167,7 @@ class TestUniversalGeneralization:
         ctx.current_scope = Scope(id=1, parent=ctx.root_scope, free_vars={"x"})
         ctx.line_to_scope[1] = ctx.current_scope
         ctx.free_vars.add("x")
-        body = Membership(Variable("x"), Variable("A"))
+        body = InfixPredicate(Variable("x"), "∈", Variable("A"))
         ctx.proof_lines[1] = body
 
         line = ProofLine(
@@ -199,7 +197,7 @@ class TestUniversalGeneralization:
         assert result == ForAll("A", ForAll("B", body))
 
     def test_ug_non_free_variable(self, ctx):
-        body = Membership(Variable("x"), Variable("A"))
+        body = InfixPredicate(Variable("x"), "∈", Variable("A"))
         ctx.proof_lines[1] = body
         # x is NOT a free variable
         line = ProofLine(number=2, formula=None, justification=Justification("UG", (1, "x")))
@@ -213,8 +211,8 @@ class TestImplIntro:
     def test_valid(self, ctx):
         from tools.context import Scope
 
-        p = Membership(Variable("x"), Variable("A"))
-        q = Membership(Variable("x"), Variable("B"))
+        p = InfixPredicate(Variable("x"), "∈", Variable("A"))
+        q = InfixPredicate(Variable("x"), "∈", Variable("B"))
         ctx.proof_lines[1] = p
         ctx.proof_lines[2] = q
 
@@ -233,22 +231,22 @@ class TestImplIntro:
 
 class TestSubstitution:
     def test_simple(self):
-        f = Membership(Variable("x"), Variable("A"))
+        f = InfixPredicate(Variable("x"), "∈", Variable("A"))
         result = substitute(f, "x", Variable("w"))
-        assert result == Membership(Variable("w"), Variable("A"))
+        assert result == InfixPredicate(Variable("w"), "∈", Variable("A"))
 
     def test_respects_binding(self):
         # ∀x (x ∈ A) — substituting x should not enter the ∀x scope
-        f = ForAll("x", Membership(Variable("x"), Variable("A")))
+        f = ForAll("x", InfixPredicate(Variable("x"), "∈", Variable("A")))
         result = substitute(f, "x", Variable("w"))
         # Should be unchanged — x is re-bound inside ∀x
         assert result == f
 
     def test_substitutes_free_only(self):
         # ∀y (x ∈ y) — x is free, y is bound
-        f = ForAll("y", Membership(Variable("x"), Variable("y")))
+        f = ForAll("y", InfixPredicate(Variable("x"), "∈", Variable("y")))
         result = substitute(f, "x", Variable("w"))
-        assert result == ForAll("y", Membership(Variable("w"), Variable("y")))
+        assert result == ForAll("y", InfixPredicate(Variable("w"), "∈", Variable("y")))
 
 
 class TestHypothesis:
@@ -266,7 +264,7 @@ class TestHypothesis:
         assert "y" in ctx.free_vars
 
     def test_assume_statement(self, ctx):
-        f = Membership(Variable("x"), Variable("A"))
+        f = InfixPredicate(Variable("x"), "∈", Variable("A"))
         line = ProofLine(
             number=1,
             formula=f,
@@ -280,9 +278,9 @@ class TestHypothesis:
 
 class TestIffTrans:
     def test_valid_iff_trans(self, ctx):
-        p = Membership(Variable("x"), Variable("A"))
-        q = Membership(Variable("x"), Variable("B"))
-        r = Membership(Variable("x"), Variable("C"))
+        p = InfixPredicate(Variable("x"), "∈", Variable("A"))
+        q = InfixPredicate(Variable("x"), "∈", Variable("B"))
+        r = InfixPredicate(Variable("x"), "∈", Variable("C"))
 
         ctx.proof_lines[1] = Biconditional(left=p, right=q)
         ctx.proof_lines[2] = Biconditional(left=r, right=q)
@@ -297,10 +295,10 @@ class TestIffTrans:
         assert result == Biconditional(left=p, right=r)
 
     def test_invalid_no_shared_side(self, ctx):
-        p = Membership(Variable("x"), Variable("A"))
-        q = Membership(Variable("x"), Variable("B"))
-        r = Membership(Variable("x"), Variable("C"))
-        s = Membership(Variable("x"), Variable("D"))
+        p = InfixPredicate(Variable("x"), "∈", Variable("A"))
+        q = InfixPredicate(Variable("x"), "∈", Variable("B"))
+        r = InfixPredicate(Variable("x"), "∈", Variable("C"))
+        s = InfixPredicate(Variable("x"), "∈", Variable("D"))
 
         ctx.proof_lines[1] = Biconditional(left=p, right=q)
         ctx.proof_lines[2] = Biconditional(left=r, right=s)
@@ -388,12 +386,12 @@ class TestNewInference:
         x = Variable("x")
         y = Variable("y")
         # x = x -> y = y given x = y
-        phi = Equality(x, x)
+        phi = InfixPredicate(x, "=", x)
         ctx.proof_lines[1] = phi
-        ctx.proof_lines[2] = Equality(x, y)
+        ctx.proof_lines[2] = InfixPredicate(x, "=", y)
 
-        line = ProofLine(3, Equality(y, y), Justification("EqReplaceAll", (1, 2)))
-        assert apply_rule(ctx, line) == Equality(y, y)
+        line = ProofLine(3, InfixPredicate(y, "=", y), Justification("EqReplaceAll", (1, 2)))
+        assert apply_rule(ctx, line) == InfixPredicate(y, "=", y)
 
     def test_composite_axiom(self, ctx):
         # axiom Trans: ∀x ∀y ∀z ((x=y ∧ y=z) ⟹ x=z)
@@ -402,15 +400,29 @@ class TestNewInference:
 
         trans_formula = ForAll(
             "x",
-            ForAll("y", ForAll("z", Implies(And(Equality(x, y), Equality(y, z)), Equality(x, z)))),
+            ForAll(
+                "y",
+                ForAll(
+                    "z",
+                    Implies(
+                        And(
+                            InfixPredicate(x, "=", y),
+                            InfixPredicate(y, "=", z),
+                        ),
+                        InfixPredicate(x, "=", z),
+                    ),
+                ),
+            ),
         )
         ctx.axioms["Trans"] = trans_formula
 
-        ctx.proof_lines[1] = And(Equality(a, b), Equality(b, c))
+        ctx.proof_lines[1] = And(InfixPredicate(a, "=", b), InfixPredicate(b, "=", c))
 
         # Test UI + UI + UI + MP
-        line = ProofLine(2, Equality(a, c), Justification("Axiom", ("Trans", a, b, c, 1)))
-        assert apply_rule(ctx, line) == Equality(a, c)
+        line = ProofLine(
+            2, InfixPredicate(a, "=", c), Justification("Axiom", ("Trans", a, b, c, 1))
+        )
+        assert apply_rule(ctx, line) == InfixPredicate(a, "=", c)
 
     def test_composite_theorem(self, ctx):
         p = Variable("P")
@@ -426,15 +438,15 @@ class TestNewInference:
         # constant Empty: ∀x ¬(x ∈ Empty)
         x = Variable("x")
         empty = Variable("Empty")
-        formula = ForAll("x", Not(Membership(x, empty)))
+        formula = ForAll("x", Not(InfixPredicate(x, "∈", empty)))
         ctx.constants["Empty"] = formula
 
         line = ProofLine(
             1,
-            Not(Membership(Variable("a"), empty)),
+            Not(InfixPredicate(Variable("a"), "∈", empty)),
             Justification("Constant", ("Empty", Variable("a"))),
         )
-        assert apply_rule(ctx, line) == Not(Membership(Variable("a"), empty))
+        assert apply_rule(ctx, line) == Not(InfixPredicate(Variable("a"), "∈", empty))
 
     def test_composite_operation(self, ctx):
         # operation A ∪ B: ∀x (x ∈ A ∪ B ⟺ x ∈ A ∨ x ∈ B)
@@ -443,21 +455,34 @@ class TestNewInference:
         b = Variable("B")
         union = FuncApp("Union", (a, b))
         formula = ForAll(
-            "x", Biconditional(Membership(x, union), Or(Membership(x, a), Membership(x, b)))
+            "x",
+            Biconditional(
+                InfixPredicate(x, "∈", union),
+                Or(
+                    InfixPredicate(x, "∈", a),
+                    InfixPredicate(x, "∈", b),
+                ),
+            ),
         )
         ctx.operations["Union"] = formula
 
         line = ProofLine(
             1,
             Biconditional(
-                Membership(Variable("z"), union),
-                Or(Membership(Variable("z"), a), Membership(Variable("z"), b)),
+                InfixPredicate(Variable("z"), "∈", union),
+                Or(
+                    InfixPredicate(Variable("z"), "∈", a),
+                    InfixPredicate(Variable("z"), "∈", b),
+                ),
             ),
             Justification("Operation", ("Union", Variable("z"))),
         )
         assert apply_rule(ctx, line) == Biconditional(
-            Membership(Variable("z"), union),
-            Or(Membership(Variable("z"), a), Membership(Variable("z"), b)),
+            InfixPredicate(Variable("z"), "∈", union),
+            Or(
+                InfixPredicate(Variable("z"), "∈", a),
+                InfixPredicate(Variable("z"), "∈", b),
+            ),
         )
 
     def test_composite_chain(self, ctx):
@@ -491,18 +516,18 @@ class TestNewInference:
 class TestEqIntro:
     def test_valid_eq_intro(self, ctx):
         a = Variable("a")
-        line = ProofLine(1, Equality(a, a), Justification("EqIntro", ()))
-        assert apply_rule(ctx, line) == Equality(a, a)
+        line = ProofLine(1, InfixPredicate(a, "=", a), Justification("EqIntro", ()))
+        assert apply_rule(ctx, line) == InfixPredicate(a, "=", a)
 
     def test_invalid_eq_intro_arguments(self, ctx):
         a = Variable("a")
-        line = ProofLine(1, Equality(a, a), Justification("EqIntro", (1,)))
+        line = ProofLine(1, InfixPredicate(a, "=", a), Justification("EqIntro", (1,)))
         with pytest.raises(VerificationError, match="EqIntro requires no arguments"):
             apply_rule(ctx, line)
 
     def test_invalid_eq_intro_not_equality(self, ctx):
         a = Variable("a")
-        line = ProofLine(1, Membership(a, a), Justification("EqIntro", ()))
+        line = ProofLine(1, InfixPredicate(a, "∈", a), Justification("EqIntro", ()))
         with pytest.raises(
             VerificationError, match="EqIntro: claimed formula must be of the form t = t"
         ):
@@ -511,7 +536,7 @@ class TestEqIntro:
     def test_invalid_eq_intro_mismatched_terms(self, ctx):
         a = Variable("a")
         b = Variable("b")
-        line = ProofLine(1, Equality(a, b), Justification("EqIntro", ()))
+        line = ProofLine(1, InfixPredicate(a, "=", b), Justification("EqIntro", ()))
         with pytest.raises(
             VerificationError, match="EqIntro: claimed formula must be of the form t = t"
         ):

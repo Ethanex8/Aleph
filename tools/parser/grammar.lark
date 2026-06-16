@@ -64,7 +64,7 @@ just_arg_list: just_arg ("," just_arg)*
          | INT          -> just_line
          | just_word
 
-?just_word: (IDENTIFIER | INFIX_REL | INFIX_OP | MEMBER | SET_ENUM_NAME) -> just_word
+?just_word: (IDENTIFIER | INFIX_REL | INFIX_OP | SET_ENUM_NAME) -> just_word
 
 schema_subst: SCHEMA_VAR ":=" formula
 
@@ -96,9 +96,7 @@ schema_subst: SCHEMA_VAR ":=" formula
 
 ?atom: IDENTIFIER "(" term_list ")"                 -> predicate
      | SCHEMA_VAR "(" term_list ")"                 -> schema_app
-     | term MEMBER term                            -> membership
      | term INFIX_REL term                         -> infix_predicate
-     | term "=" term                               -> equality
      | IDENTIFIER                                  -> predicate
      | "(" formula ")"
 
@@ -124,9 +122,8 @@ OR: "∨"
 NOT: "¬"
 IMPLIES: "⟹"
 BICOND: "⟺"
-MEMBER: "∈"
 
-INFIX_REL: /[⊆⊂≈≅∼≃≤≥<>∉≠]/
+INFIX_REL: /[⊆⊂≈≅∼≃≤≥<>∉≠=∈]/
 INFIX_OP: /[∪∩∖]/
 
 _IDENT_CHAR: /[A-Za-z\u03B1-\u03C9\u0391-\u03A9\u2100-\u214F\u2205]/

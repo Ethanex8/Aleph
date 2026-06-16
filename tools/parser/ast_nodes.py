@@ -88,22 +88,10 @@ class SchemaApp:
 
 
 @dataclass(frozen=True)
-class Membership:
-    """Set membership, ``t ∈ s``."""
-
-    element: Term
-    set_: Term
-
-    def __repr__(self) -> str:
-        """Return the membership string representation."""
-        return f"({self.element} ∈ {self.set_})"
-
-
-@dataclass(frozen=True)
 class InfixPredicate:
     """Infix relation application, e.g. ``A ⊆ B``, ``x < y``.
 
-    Operators can include ⊆, ⊂, ≈, ≅, ∼, ≃, ≤, ≥, <, >.
+    Operators can include ⊆, ⊂, ≈, ≅, ∼, ≃, ≤, ≥, <, >, =, ∈.
     """
 
     left: Term
@@ -113,18 +101,6 @@ class InfixPredicate:
     def __repr__(self) -> str:
         """Return the infix predicate representation."""
         return f"({self.left} {self.operator} {self.right})"
-
-
-@dataclass(frozen=True)
-class Equality:
-    """Equality, ``t = s``."""
-
-    left: Term
-    right: Term
-
-    def __repr__(self) -> str:
-        """Return the equality formula representation."""
-        return f"({self.left} = {self.right})"
 
 
 @dataclass(frozen=True)
@@ -213,9 +189,7 @@ class Exists:
 Formula = (
     Predicate
     | SchemaApp
-    | Membership
     | InfixPredicate
-    | Equality
     | Not
     | And
     | Or

@@ -13,8 +13,8 @@ from tools.inference import apply_rule
 from tools.parser.ast_nodes import (
     AxiomDecl,
     DefinitionDecl,
-    Equality,
     Formula,
+    InfixPredicate,
     OperationDecl,
     SchemaDecl,
     TheoremDecl,
@@ -124,7 +124,9 @@ def _handle_definition(decl: DefinitionDecl, ctx: ProofContext) -> str:
 
     f, _ = unwrap_forall(decl.formula)
 
-    if not isinstance(f, Biconditional) and not isinstance(f, Equality):
+    if not isinstance(f, Biconditional) and not (
+        isinstance(f, InfixPredicate) and f.operator == "="
+    ):
         raise VerificationError(
             f"Definition '{decl.name}' underlying formula is not a biconditional or equality."
         )

@@ -8,8 +8,8 @@ from tools.context import (
 )
 from tools.inference.core import extract_line_refs, inference_rule
 from tools.parser.ast_nodes import (
-    Equality,
     Formula,
+    InfixPredicate,
     ProofLine,
 )
 from tools.parser.ast_utils import substitute_equality, substitute_term
@@ -34,7 +34,7 @@ def apply_eq_replace(
     formula_j = ctx.get_line(line_j)
 
     # Referenced premise j must be an equality (t = s)
-    if not isinstance(formula_j, Equality):
+    if not isinstance(formula_j, InfixPredicate) or formula_j.operator != "=":
         raise VerificationError(f"EqReplace: line {line_j} must be an equality", line.number)
 
     # Try replacing t with s (left to right replacement)
@@ -70,7 +70,7 @@ def apply_eq_replace_all(
     formula_j = ctx.get_line(line_j)
 
     # Referenced premise j must be an equality (t = s)
-    if not isinstance(formula_j, Equality):
+    if not isinstance(formula_j, InfixPredicate) or formula_j.operator != "=":
         raise VerificationError(f"EqReplaceAll: line {line_j} must be an equality", line.number)
 
     # Try replacing t with s
@@ -104,7 +104,11 @@ def apply_eq_intro(
         raise VerificationError(f"EqIntro requires no arguments, got {rule_args}", line.number)
 
     # Claimed formula must be an equality of the form t = t
-    if not isinstance(claimed_formula, Equality) or claimed_formula.left != claimed_formula.right:
+    if (
+        not isinstance(claimed_formula, InfixPredicate)
+        or claimed_formula.operator != "="
+        or claimed_formula.left != claimed_formula.right
+    ):
         raise VerificationError(
             f"EqIntro: claimed formula must be of the form t = t, got {claimed_formula}",
             line.number,

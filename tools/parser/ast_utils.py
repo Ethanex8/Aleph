@@ -8,7 +8,6 @@ from typing import cast
 from tools.parser.ast_nodes import (
     And,
     Biconditional,
-    Equality,
     Exists,
     ForAll,
     Formula,
@@ -16,7 +15,6 @@ from tools.parser.ast_nodes import (
     Implies,
     InfixPredicate,
     InfixTerm,
-    Membership,
     Node,
     Not,
     Or,
@@ -64,7 +62,9 @@ def build_req_uniqueness(name: str, params: tuple[str, ...], formula: Formula) -
             variable="__d",
             body=Implies(
                 antecedent=And(left=phi_c, right=phi_d),
-                consequent=Equality(left=Variable("__c"), right=Variable("__d")),
+                consequent=InfixPredicate(
+                    left=Variable("__c"), operator="=", right=Variable("__d")
+                ),
             ),
         ),
     )
@@ -179,8 +179,6 @@ def get_free_vars(formula: Formula) -> set[str]:
             case (
                 InfixTerm(left=l, right=r)
                 | InfixPredicate(left=l, right=r)
-                | Equality(left=l, right=r)
-                | Membership(element=l, set_=r)
                 | And(left=l, right=r)
                 | Or(left=l, right=r)
                 | Implies(antecedent=l, consequent=r)

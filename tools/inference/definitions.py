@@ -10,8 +10,8 @@ from tools.inference.core import _get_line_ref, inference_rule
 from tools.inference.references import _apply_bindings, _try_match
 from tools.parser.ast_nodes import (
     Biconditional,
-    Equality,
     Formula,
+    InfixPredicate,
     Node,
     ProofLine,
 )
@@ -62,7 +62,9 @@ def apply_definition(
     def_body, def_vars = unwrap_forall(defn)
 
     # Check definition format
-    if isinstance(def_body, (Biconditional, Equality)):
+    if isinstance(def_body, Biconditional) or (
+        isinstance(def_body, InfixPredicate) and def_body.operator == "="
+    ):
         lhs_template = def_body.left
         rhs_template = def_body.right
     else:

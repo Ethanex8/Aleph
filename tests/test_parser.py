@@ -5,12 +5,10 @@ from tools.parser.ast_nodes import (
     AxiomDecl,
     Biconditional,
     DefinitionDecl,
-    Equality,
     Exists,
     ForAll,
     Implies,
     InfixPredicate,
-    Membership,
     Not,
     Or,
     Predicate,
@@ -27,7 +25,7 @@ class TestFormulaParser:
 
     def test_simple_membership(self):
         f = parse_formula("x ∈ A")
-        assert f == Membership(element=Variable("x"), set_=Variable("A"))
+        assert f == InfixPredicate(left=Variable("x"), operator="∈", right=Variable("A"))
 
     def test_subset(self):
         f = parse_formula("A ⊆ B")
@@ -35,11 +33,13 @@ class TestFormulaParser:
 
     def test_equality(self):
         f = parse_formula("x = y")
-        assert f == Equality(left=Variable("x"), right=Variable("y"))
+        assert f == InfixPredicate(left=Variable("x"), operator="=", right=Variable("y"))
 
     def test_negation(self):
         f = parse_formula("¬(x ∈ A)")
-        assert f == Not(operand=Membership(Variable("x"), Variable("A")))
+        assert f == Not(
+            operand=InfixPredicate(left=Variable("x"), operator="∈", right=Variable("A"))
+        )
 
     def test_notin(self):
         f = parse_formula("x ∉ A")
@@ -48,8 +48,8 @@ class TestFormulaParser:
     def test_conjunction(self):
         f = parse_formula("x ∈ A ∧ y ∈ B")
         assert isinstance(f, And)
-        assert f.left == Membership(Variable("x"), Variable("A"))
-        assert f.right == Membership(Variable("y"), Variable("B"))
+        assert f.left == InfixPredicate(left=Variable("x"), operator="∈", right=Variable("A"))
+        assert f.right == InfixPredicate(left=Variable("y"), operator="∈", right=Variable("B"))
 
     def test_disjunction(self):
         f = parse_formula("x = A ∨ x = B")
@@ -58,8 +58,8 @@ class TestFormulaParser:
     def test_implication(self):
         f = parse_formula("x ∈ A ⟹ x ∈ B")
         assert isinstance(f, Implies)
-        assert f.antecedent == Membership(Variable("x"), Variable("A"))
-        assert f.consequent == Membership(Variable("x"), Variable("B"))
+        assert f.antecedent == InfixPredicate(left=Variable("x"), operator="∈", right=Variable("A"))
+        assert f.consequent == InfixPredicate(left=Variable("x"), operator="∈", right=Variable("B"))
 
     def test_biconditional(self):
         f = parse_formula("x ∈ A ⟺ x ∈ B")
@@ -69,7 +69,7 @@ class TestFormulaParser:
         f = parse_formula("∀x (x ∈ A)")
         assert isinstance(f, ForAll)
         assert f.variable == "x"
-        assert f.body == Membership(Variable("x"), Variable("A"))
+        assert f.body == InfixPredicate(left=Variable("x"), operator="∈", right=Variable("A"))
 
     def test_existential_quantifier(self):
         f = parse_formula("∃x (x ∈ A)")
@@ -182,7 +182,7 @@ class TestDeclarationParser:
         assert thm.proof_lines[0].let_vars == ("x",)
 
         # Check regular formula line
-        assert thm.proof_lines[1].formula == Equality(Variable("x"), Variable("x"))
+        assert thm.proof_lines[1].formula == InfixPredicate(Variable("x"), "=", Variable("x"))
 
     def test_multiple_declarations(self):
         src = "axiom A1:\n    x = x\n\naxiom A2:\n    y = y\n"

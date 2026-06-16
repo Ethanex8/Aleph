@@ -108,18 +108,24 @@ class ProofContext:
 
     def register_definition(self, name: str, formula: Formula) -> None:
         """Register a new definition. Raises VerificationError if the name is already used."""
+        if name in {"=", "∈"}:
+            raise VerificationError(f"Cannot redefine primitive symbol: {name}")
         if name in self.definitions:
             raise VerificationError(f"Duplicate definition: {name}")
         self.definitions[name] = formula
 
     def register_constant(self, name: str, formula: Formula) -> None:
         """Register a new constant definition. Raises VerificationError if the name is already used."""
+        if name in {"=", "∈"}:
+            raise VerificationError(f"Cannot redefine primitive symbol: {name}")
         if name in self.constants:
             raise VerificationError(f"Duplicate constant: {name}")
         self.constants[name] = formula
 
     def register_operation(self, name: str, formula: Formula) -> None:
         """Register a new operation definition. Raises VerificationError if the name is already used."""
+        if name in {"=", "∈"}:
+            raise VerificationError(f"Cannot redefine primitive symbol: {name}")
         if name in self.operations:
             raise VerificationError(f"Duplicate operation: {name}")
         self.operations[name] = formula
