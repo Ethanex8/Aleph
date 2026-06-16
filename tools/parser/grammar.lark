@@ -9,13 +9,11 @@ start: (_NL* statement)* _NL*
           | schema_decl
           | definition_decl
           | theorem_decl
-          | constant_decl
-          | operation_decl
+          | symbol_decl
 
 // ---------------------------------------------------------------------------
 // Top-level declarations
 // ---------------------------------------------------------------------------
-
 
 axiom_decl: "axiom" IDENTIFIER ":" _NL formula
 
@@ -25,19 +23,16 @@ schema_params: schema_param ("," schema_param)*
 schema_param: SCHEMA_VAR "(" param_vars ")"
 param_vars: IDENTIFIER ("," IDENTIFIER)*
 
-?definition_decl: "definition" def_signature ":" _NL formula -> definition_decl
-                | "definition" op_signature "=" term -> term_definition_decl
+?definition_decl: "definition" signature ":" _NL formula -> definition_decl
+                | "definition" signature "=" term      -> term_definition_decl
 
-?def_signature: IDENTIFIER INFIX_REL IDENTIFIER -> def_infix
-              | IDENTIFIER "(" param_vars ")"  -> def_pred
+symbol_decl: ("constant" | "operation") signature ":" _NL formula _NL "existence:" IDENTIFIER _NL "uniqueness:" IDENTIFIER
 
-constant_decl: "constant" IDENTIFIER ":" _NL formula _NL "existence:" IDENTIFIER _NL "uniqueness:" IDENTIFIER
-
-operation_decl: "operation" op_signature ":" _NL formula _NL "existence:" IDENTIFIER _NL "uniqueness:" IDENTIFIER
-
-?op_signature: IDENTIFIER "(" param_vars ")"  -> op_func
-             | IDENTIFIER INFIX_TERM_OP IDENTIFIER -> op_infix
-             | "{" param_vars "}"             -> op_set_enum
+?signature: IDENTIFIER "(" param_vars ")"  -> sig_prefix
+          | IDENTIFIER INFIX_REL IDENTIFIER -> sig_infix
+          | IDENTIFIER INFIX_OP IDENTIFIER  -> sig_infix
+          | "{" param_vars "}"             -> sig_set_enum
+          | IDENTIFIER                     -> sig_prefix
 
 theorem_decl: "theorem" IDENTIFIER ":" _NL formula _NL "proof:" proof_body "qed"
 
@@ -67,12 +62,9 @@ just_arg_list: just_arg ("," just_arg)*
 ?just_arg: schema_subst
          | term
          | INT          -> just_line
-         | IDENTIFIER   -> just_word
-         | INFIX_REL    -> just_word
-         | INFIX_TERM_OP -> just_word
-         | MEMBER       -> just_word
-         | SET_ENUM_NAME -> just_word
+         | just_word
 
+?just_word: (IDENTIFIER | INFIX_REL | INFIX_OP | MEMBER | SET_ENUM_NAME) -> just_word
 
 schema_subst: SCHEMA_VAR ":=" formula
 
@@ -104,9 +96,10 @@ schema_subst: SCHEMA_VAR ":=" formula
 
 ?atom: IDENTIFIER "(" term_list ")"                 -> predicate
      | SCHEMA_VAR "(" term_list ")"                 -> schema_app
-     | term MEMBER term                             -> membership
-     | term INFIX_REL term                          -> infix_predicate
-     | term "=" term                                -> equality
+     | term MEMBER term                            -> membership
+     | term INFIX_REL term                         -> infix_predicate
+     | term "=" term                               -> equality
+     | IDENTIFIER                                  -> predicate
      | "(" formula ")"
 
 // ---------------------------------------------------------------------------
@@ -116,9 +109,9 @@ schema_subst: SCHEMA_VAR ":=" formula
 term_list: term ("," term)*
 
 ?term: IDENTIFIER "(" term_list ")"                 -> func_app
-     | term INFIX_TERM_OP term                      -> infix_term
-     | IDENTIFIER                                   -> variable
-     | "{" term_list "}"                            -> set_enum
+     | term INFIX_OP term                          -> infix_term
+     | IDENTIFIER                                  -> variable
+     | "{" term_list "}"                           -> set_enum
 
 // ---------------------------------------------------------------------------
 // Terminals
@@ -132,14 +125,14 @@ NOT: "¬"
 IMPLIES: "⟹"
 BICOND: "⟺"
 MEMBER: "∈"
-INFIX_REL: /[⊆⊂≈≅∼≃≤≥<>∉≠]/
-INFIX_TERM_OP: /[∪∩∖]/
 
-IDENTIFIER: /[A-Za-z\u03B1-\u03C9\u0391-\u03A9\u2100-\u214F\u2205][A-Za-z0-9_]*(\.[A-Za-z\u03B1-\u03C9\u0391-\u03A9\u2100-\u214F\u2205][A-Za-z0-9_]*)*/
+INFIX_REL: /[⊆⊂≈≅∼≃≤≥<>∉≠]/
+INFIX_OP: /[∪∩∖]/
+
+_IDENT_CHAR: /[A-Za-z\u03B1-\u03C9\u0391-\u03A9\u2100-\u214F\u2205]/
+IDENTIFIER: _IDENT_CHAR (_IDENT_CHAR | /[0-9_.]/)*
 SCHEMA_VAR.2: /[Φφψχ][A-Za-z0-9]*/
 SET_ENUM_NAME: /\{,*\}/
-
-
 
 INT: /[0-9]+/
 

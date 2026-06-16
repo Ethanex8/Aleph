@@ -12,7 +12,6 @@ from tools.context import ProofContext, Scope, VerificationError
 from tools.inference import apply_rule
 from tools.parser.ast_nodes import (
     AxiomDecl,
-    ConstantDecl,
     DefinitionDecl,
     Equality,
     Formula,
@@ -94,7 +93,7 @@ def declaration_handler(
 
 
 def _process_declaration(
-    decl: AxiomDecl | SchemaDecl | DefinitionDecl | TheoremDecl | ConstantDecl | OperationDecl,
+    decl: AxiomDecl | SchemaDecl | DefinitionDecl | TheoremDecl | OperationDecl,
     ctx: ProofContext,
 ) -> str | None:
     """Process a single top-level declaration using the registered handler."""
@@ -157,24 +156,6 @@ def _handle_theorem(decl: TheoremDecl, ctx: ProofContext) -> str:
     return _verify_theorem(decl, ctx)
 
 
-@declaration_handler(ConstantDecl)
-def _handle_constant(decl: ConstantDecl, ctx: ProofContext) -> str:
-    vars_in_formula = get_free_vars(decl.formula)
-    known_symbols = (
-        set(ctx.constants.keys()) | set(ctx.definitions.keys()) | set(ctx.operations.keys())
-    )
-    vars_in_formula = {v for v in vars_in_formula if v not in known_symbols and v != decl.name}
-    if vars_in_formula:
-        raise VerificationError(
-            f"Constant '{decl.name}' has unbound free variables: {sorted(vars_in_formula)}"
-        )
-    _verify_defined_symbol(
-        decl.name, (), decl.formula, decl.existence_proof, decl.uniqueness_proof, ctx
-    )
-    print(f"  [OK] Constant rigorously verified: {decl.name}")
-    return decl.name
-
-
 @declaration_handler(OperationDecl)
 def _handle_operation(decl: OperationDecl, ctx: ProofContext) -> str:
     vars_in_formula = get_free_vars(decl.formula)
@@ -184,8 +165,9 @@ def _handle_operation(decl: OperationDecl, ctx: ProofContext) -> str:
     vars_in_formula = {v for v in vars_in_formula if v not in known_symbols and v != decl.name}
 
     if vars_in_formula != set(decl.params):
+        label = "Constant" if not decl.params else "Operation"
         raise VerificationError(
-            f"Operation '{decl.name}' free variables do not match parameters.\n"
+            f"{label} '{decl.name}' free variables do not match parameters.\n"
             f"  Expected: {sorted(set(decl.params))}\n"
             f"  Found:    {sorted(vars_in_formula)}"
         )
@@ -193,7 +175,8 @@ def _handle_operation(decl: OperationDecl, ctx: ProofContext) -> str:
     _verify_defined_symbol(
         decl.name, decl.params, decl.formula, decl.existence_proof, decl.uniqueness_proof, ctx
     )
-    print(f"  [OK] Operation rigorously verified: {decl.name}")
+    label = "Constant" if not decl.params else "Operation"
+    print(f"  [OK] {label} rigorously verified: {decl.name}")
     return decl.name
 
 
