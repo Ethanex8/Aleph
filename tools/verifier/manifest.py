@@ -293,7 +293,6 @@ class Manifest:
         # Avoid circular imports by importing parser tools here
         from tools.parser.ast_nodes import (
             AxiomDecl,
-            ConstantDecl,
             DefinitionDecl,
             ForAll,
             OperationDecl,
@@ -330,13 +329,14 @@ class Manifest:
                 self.cache[qualified_name] = CachedSymbol("schema", decl)
             elif isinstance(decl, DefinitionDecl):
                 self.cache[qualified_name] = CachedSymbol("definition", decl.formula)
-            elif isinstance(decl, ConstantDecl):
-                self.cache[qualified_name] = CachedSymbol("constant", decl.formula)
             elif isinstance(decl, OperationDecl):
                 op_formula = decl.formula
                 for p in reversed(decl.params):
                     op_formula = ForAll(variable=p, body=op_formula)
-                self.cache[qualified_name] = CachedSymbol("operation", op_formula)
+                if not decl.params:
+                    self.cache[qualified_name] = CachedSymbol("constant", op_formula)
+                else:
+                    self.cache[qualified_name] = CachedSymbol("operation", op_formula)
             elif isinstance(decl, TheoremDecl):
                 self.cache[qualified_name] = CachedSymbol("theorem", decl.formula)
 

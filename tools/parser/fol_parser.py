@@ -17,7 +17,6 @@ from tools.parser.ast_nodes import (
     And,
     AxiomDecl,
     Biconditional,
-    ConstantDecl,
     DefinitionDecl,
     Equality,
     Exists,
@@ -95,45 +94,45 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         """Map parameter token names to a list of strings."""
         return [str(n) for n in names]
 
-    def def_infix(
-        self, left: Token, op: Token, right: Token
-    ) -> tuple[str, InfixPredicate, list[str]]:
-        """Produce definition signature for infix notation.
+    def sig_infix(self, left: Token, op: Token, right: Token) -> tuple[str, tuple[str, ...]]:
+        """Produce signature for infix notation."""
+        return (str(op), (str(left), str(right)))
 
-        Returns a tuple of (operator_name, LHS InfixPredicate node, variable parameters).
-        """
-        left_var = Variable(str(left))
-        right_var = Variable(str(right))
-        lhs = InfixPredicate(left=left_var, operator=str(op), right=right_var)
-        return (str(op), lhs, [str(left), str(right)])
+    def sig_prefix(self, name: Token, var_list: Any = None) -> tuple[str, tuple[str, ...]]:
+        """Produce signature for standard prefix notation."""
+        return (str(name), tuple(var_list) if var_list is not None else ())
 
-    def def_pred(self, name: Token, var_list: Any) -> tuple[str, Predicate, list[str]]:
-        """Produce definition signature for standard prefix predicate notation.
-
-        Returns a tuple of (predicate_name, LHS Predicate node, variable parameters).
-        """
-        vars = [Variable(v) for v in var_list]
-        lhs = Predicate(name=str(name), args=tuple(vars))
-        return (str(name), lhs, list(var_list))
+    def sig_set_enum(self, param_vars: Any) -> tuple[str, tuple[str, ...]]:
+        """Return set enum signature: ('{,,}', parameter tuple)."""
+        commas = "," * (len(param_vars) - 1)
+        name = f"{{{commas}}}"
+        return (name, tuple(param_vars))
 
     def definition_decl(self, signature: Any, formula: Formula) -> DefinitionDecl:
-        """Construct a DefinitionDecl AST node.
+        """Construct a DefinitionDecl AST node for a formula definition.
 
         Converts LHS <=> RHS into a universally quantified formula.
         """
-        name, lhs, params = signature
-        # Convert LHS and RHS formula into a Biconditional
+        name, params = signature
+        # Reconstruct LHS formula
+        lhs: Formula
+        if name in {"⊆", "⊂", "≈", "≅", "∼", "≃", "≤", "≥", "<", ">", "∉", "≠"}:
+            lhs = InfixPredicate(left=Variable(params[0]), operator=name, right=Variable(params[1]))
+        else:
+            lhs = Predicate(name=name, args=tuple(Variable(p) for p in params))
+
         full_formula: Formula = Biconditional(left=lhs, right=formula)
-        full_formula = wrap_forall(full_formula, params)
+        full_formula = wrap_forall(full_formula, list(params))
 
         return DefinitionDecl(name=name, formula=full_formula)
 
     def term_definition_decl(self, signature: Any, term: Term) -> DefinitionDecl:
-        """Construct a DefinitionDecl for a term macro.
+        """Construct a DefinitionDecl for a term definition.
 
         Converts LHS = RHS into a universally quantified formula.
         """
         name, params = signature
+        # Reconstruct LHS term
         lhs: Term
         if name in {"∪", "∩", "∖"}:
             lhs = InfixTerm(left=Variable(params[0]), operator=name, right=Variable(params[1]))
@@ -141,37 +140,16 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
             lhs = FuncApp(name=name, args=tuple(Variable(p) for p in params))
 
         full_formula: Formula = Equality(left=lhs, right=term)
-        full_formula = wrap_forall(full_formula, params)
+        full_formula = wrap_forall(full_formula, list(params))
 
         return DefinitionDecl(name=name, formula=full_formula)
 
-    def constant_decl(
-        self, name: Token, formula: Formula, ex_proof: Token, un_proof: Token
-    ) -> ConstantDecl:
-        """Construct a ConstantDecl rigorously backed by existence and uniqueness proofs."""
-        return ConstantDecl(
-            name=str(name),
-            formula=formula,
-            existence_proof=str(ex_proof),
-            uniqueness_proof=str(un_proof),
-        )
-
-    def op_func(self, name: Token, param_vars: Any) -> tuple[str, tuple[str, ...]]:
-        """Return prefix function signature: (name, parameter tuple)."""
-        return (str(name), tuple(param_vars))
-
-    def op_infix(self, left_var: Token, op: Token, right_var: Token) -> tuple[str, tuple[str, str]]:
-        """Return infix operation signature: (operator, (left, right))."""
-        return (str(op), (str(left_var), str(right_var)))
-
-    def op_set_enum(self, param_vars: Any) -> tuple[str, tuple[str, ...]]:
-        """Return set enum operation signature: ('{,,}', parameter tuple)."""
-        commas = "," * (len(param_vars) - 1)
-        name = f"{{{commas}}}"
-        return (name, tuple(param_vars))
-
-    def operation_decl(
-        self, sig: Any, formula: Formula, ex_proof: Token, un_proof: Token
+    def symbol_decl(
+        self,
+        sig: Any,
+        formula: Formula,
+        ex_proof: Token,
+        un_proof: Token,
     ) -> OperationDecl:
         """Construct an OperationDecl rigorously backed by existence and uniqueness proofs."""
         name, params = sig
@@ -254,7 +232,7 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         return int(str(num))
 
     def just_word(self, name: Token) -> str:
-        """Convert justification identifier token to string."""
+        """Convert justification symbolic name token to string."""
         return str(name)
 
     def schema_subst(self, var: Token, formula: Formula) -> tuple[str, Formula]:
@@ -289,9 +267,9 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         """Construct an existential quantifier Exists (exists x, body) formula node."""
         return Exists(variable=str(var), body=body)
 
-    def predicate(self, name: Token, term_list: Any) -> Predicate:
+    def predicate(self, name: Token, term_list: Any = None) -> Predicate:
         """Construct a standard Predicate application node over terms."""
-        return Predicate(name=str(name), args=tuple(term_list))
+        return Predicate(name=str(name), args=tuple(term_list) if term_list is not None else ())
 
     def schema_app(self, name: Token, term_list: Any) -> SchemaApp:
         """Construct a SchemaApp application node over terms."""

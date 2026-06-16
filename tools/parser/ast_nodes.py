@@ -273,24 +273,14 @@ class DefinitionDecl:
 
 
 @dataclass(frozen=True)
-class ConstantDecl:
-    """A constant definition rigorously backed by existence and uniqueness proofs."""
-
-    name: str
-    formula: Formula
-    existence_proof: str
-    uniqueness_proof: str
-
-
-@dataclass(frozen=True)
 class OperationDecl:
     """An n-ary operation definition rigorously backed by existence and uniqueness proofs."""
 
     name: str
-    params: tuple[str, ...]
     formula: Formula
     existence_proof: str
     uniqueness_proof: str
+    params: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
