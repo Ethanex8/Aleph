@@ -72,8 +72,8 @@ The verifier uses deterministic structural AST matching rather than deep logical
 3. **Definitions**: Verified to ensure LHS and RHS free variables match, then registered as
    biconditionals or equalities.
 4. **Theorems**: Every proof step is evaluated; the final line must match the claim.
-5. **Constants & Operations**: Require prior existence and uniqueness theorems. The verifier
-   validates these signatures before registering the new symbol.
+5. **Symbols**: Require prior existence and uniqueness theorems. The verifier validates these
+   signatures before registering the new symbol.
 
 ### B. Dependency Management & Manifest
 
@@ -115,8 +115,7 @@ Root Scope (Depth 1)
 | | **[quantifier.py](tools/inference/quantifier.py)** | `UI`, `UG`, `ExistsIntro`, `ExistsElim` | |
 **[equality.py](tools/inference/equality.py)** | `EqIntro`, `EqReplace`, `EqReplaceAll` | |
 **[definitions.py](tools/inference/definitions.py)** | `Def` | |
-**[references.py](tools/inference/references.py)** | `Axiom`, `Theorem`, `Constant`, `Operation`,
-`Schema` |
+**[references.py](tools/inference/references.py)** | `Axiom`, `Theorem`, `Symbol`, `Schema` |
 
 ## 6. Maintenance Protocol
 

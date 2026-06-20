@@ -33,13 +33,13 @@ proof:
 qed
 ```
 
-## The Pair Operation
+## The Pair Symbol
 
-Now that we have proven existence and uniqueness, we can introduce the pair operation `{A, B}`
+Now that we have proven existence and uniqueness, we can introduce the pair symbol `{A, B}`
 directly.
 
 ```fol
-operation {A, B}:
+symbol {A, B}:
     ∀x (x ∈ {A, B} ⟺ (x = A ∨ x = B))
 existence: PairExistence
 uniqueness: PairUniqueness
@@ -47,8 +47,8 @@ uniqueness: PairUniqueness
 
 ## Pair Commutativity
 
-The pair operation is commutative, meaning that the order of the elements in the pair does not
-affect the set itself: ${A, B} = {B, A}$.
+The pair symbol is commutative, meaning that the order of the elements in the pair does not affect
+the set itself: ${A, B} = {B, A}$.
 
 ```fol
 theorem PairCommutativity:
@@ -57,8 +57,8 @@ proof:
     1. Let A, B be arbitrary [Hypothesis]
         2. Let C, D be arbitrary [Hypothesis]
             3. Let z be arbitrary [Hypothesis]
-                4. z ∈ {C, D} ⟺ (z = C ∨ z = D) [Operation {,}, C, D, z]
-                5. z ∈ {D, C} ⟺ (z = D ∨ z = C) [Operation {,}, D, C, z]
+                4. z ∈ {C, D} ⟺ (z = C ∨ z = D) [Symbol {,}, C, D, z]
+                5. z ∈ {D, C} ⟺ (z = D ∨ z = C) [Symbol {,}, D, C, z]
                 6. Assume z ∈ {C, D} [Hypothesis]
                     7. z = C ∨ z = D [IffMP 4, 6]
                     8. Assume z = C [Hypothesis]
@@ -106,7 +106,7 @@ theorem SingletonMember:
 proof:
     1. Let A, x be arbitrary [Hypothesis]
         2. {A} = {A, A} [Def {}]
-        3. (x ∈ {A, A} ⟺ (x = A ∨ x = A)) [Operation {,}, A, A, x]
+        3. (x ∈ {A, A} ⟺ (x = A ∨ x = A)) [Symbol {,}, A, A, x]
         4. Assume x ∈ {A} [Hypothesis]
             5. x ∈ {A, A} [EqReplace 4, 2]
             6. x = A ∨ x = A [IffMP 3, 5]

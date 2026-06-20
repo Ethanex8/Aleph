@@ -435,21 +435,21 @@ class TestNewInference:
         assert apply_rule(ctx, line) == q
 
     def test_composite_constant(self, ctx):
-        # constant Empty: ∀x ¬(x ∈ Empty)
+        # symbol Empty: ∀x ¬(x ∈ Empty)
         x = Variable("x")
         empty = Variable("Empty")
         formula = ForAll("x", Not(InfixPredicate(x, "∈", empty)))
-        ctx.constants["Empty"] = formula
+        ctx.symbols["Empty"] = formula
 
         line = ProofLine(
             1,
             Not(InfixPredicate(Variable("a"), "∈", empty)),
-            Justification("Constant", ("Empty", Variable("a"))),
+            Justification("Symbol", ("Empty", Variable("a"))),
         )
         assert apply_rule(ctx, line) == Not(InfixPredicate(Variable("a"), "∈", empty))
 
     def test_composite_operation(self, ctx):
-        # operation A ∪ B: ∀x (x ∈ A ∪ B ⟺ x ∈ A ∨ x ∈ B)
+        # symbol A ∪ B: ∀x (x ∈ A ∪ B ⟺ x ∈ A ∨ x ∈ B)
         x = Variable("x")
         a = Variable("A")
         b = Variable("B")
@@ -464,7 +464,7 @@ class TestNewInference:
                 ),
             ),
         )
-        ctx.operations["Union"] = formula
+        ctx.symbols["Union"] = formula
 
         line = ProofLine(
             1,
@@ -475,7 +475,7 @@ class TestNewInference:
                     InfixPredicate(Variable("z"), "∈", b),
                 ),
             ),
-            Justification("Operation", ("Union", Variable("z"))),
+            Justification("Symbol", ("Union", Variable("z"))),
         )
         assert apply_rule(ctx, line) == Biconditional(
             InfixPredicate(Variable("z"), "∈", union),

@@ -46,10 +46,10 @@ qed
 ## The Empty Set Symbol
 
 Now that we have proven that an empty set exists and that it is unique, we can formally introduce a
-constant symbol for it: $\\emptyset$.
+symbol for it: $\\emptyset$.
 
 ```fol
-constant ∅:
+symbol ∅:
     ∀x (x ∉ ∅)
 existence: EmptySetExistence
 uniqueness: EmptySetUniqueness
@@ -70,7 +70,7 @@ theorem EmptySetSubset:
 proof:
     1. Let B be arbitrary [Hypothesis]
         2. Let z be arbitrary [Hypothesis]
-            3. z ∉ ∅ [Constant ∅, z]
+            3. z ∉ ∅ [Symbol ∅, z]
             4. ¬(z ∈ ∅) [Def ∉, 3]
             5. z ∈ ∅ ⟹ z ∈ B [Vacuous 4]
         6. ∀z (z ∈ ∅ ⟹ z ∈ B) [UG 5, z]

@@ -26,7 +26,7 @@ param_vars: IDENTIFIER ("," IDENTIFIER)*
 ?definition_decl: "definition" signature ":" _NL formula -> definition_decl
                 | "definition" signature "=" term      -> term_definition_decl
 
-symbol_decl: ("constant" | "operation") signature ":" _NL formula _NL "existence:" IDENTIFIER _NL "uniqueness:" IDENTIFIER
+symbol_decl: "symbol" signature ":" _NL formula _NL "existence:" IDENTIFIER _NL "uniqueness:" IDENTIFIER
 
 ?signature: IDENTIFIER "(" param_vars ")"  -> sig_prefix
           | IDENTIFIER INFIX_REL IDENTIFIER -> sig_infix

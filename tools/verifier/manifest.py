@@ -44,7 +44,7 @@ class SectionManifest:
 class CachedSymbol:
     """A single cached mathematical symbol with its category and logical value."""
 
-    category: str  # "axiom", "schema", "definition", "constant", "operation", "theorem"
+    category: str  # "axiom", "schema", "definition", "symbol", "theorem"
     value: Any
 
 
@@ -295,8 +295,8 @@ class Manifest:
             AxiomDecl,
             DefinitionDecl,
             ForAll,
-            OperationDecl,
             SchemaDecl,
+            SymbolDecl,
             TheoremDecl,
         )
         from tools.parser.extractor import extract_and_combine_fol_blocks_from_file
@@ -329,14 +329,11 @@ class Manifest:
                 self.cache[qualified_name] = CachedSymbol("schema", decl)
             elif isinstance(decl, DefinitionDecl):
                 self.cache[qualified_name] = CachedSymbol("definition", decl.formula)
-            elif isinstance(decl, OperationDecl):
+            elif isinstance(decl, SymbolDecl):
                 op_formula = decl.formula
                 for p in reversed(decl.params):
                     op_formula = ForAll(variable=p, body=op_formula)
-                if not decl.params:
-                    self.cache[qualified_name] = CachedSymbol("constant", op_formula)
-                else:
-                    self.cache[qualified_name] = CachedSymbol("operation", op_formula)
+                self.cache[qualified_name] = CachedSymbol("symbol", op_formula)
             elif isinstance(decl, TheoremDecl):
                 self.cache[qualified_name] = CachedSymbol("theorem", decl.formula)
 
@@ -375,8 +372,7 @@ class Manifest:
                 local_name in ctx.axioms
                 or local_name in ctx.schemas
                 or local_name in ctx.definitions
-                or local_name in ctx.constants
-                or local_name in ctx.operations
+                or local_name in ctx.symbols
                 or local_name in ctx.proven_theorems
             ):
                 return (
@@ -399,12 +395,9 @@ class Manifest:
             elif symbol.category == "definition":
                 ctx.definitions[local_name] = symbol.value
                 ctx.definitions[qualified_import] = symbol.value
-            elif symbol.category == "constant":
-                ctx.constants[local_name] = symbol.value
-                ctx.constants[qualified_import] = symbol.value
-            elif symbol.category == "operation":
-                ctx.operations[local_name] = symbol.value
-                ctx.operations[qualified_import] = symbol.value
+            elif symbol.category == "symbol":
+                ctx.symbols[local_name] = symbol.value
+                ctx.symbols[qualified_import] = symbol.value
             elif symbol.category == "theorem":
                 ctx.proven_theorems[local_name] = symbol.value
                 ctx.proven_theorems[qualified_import] = symbol.value
@@ -437,10 +430,8 @@ class Manifest:
                 cache_item(name, "schema", ctx.schemas)
             elif name in ctx.definitions:
                 cache_item(name, "definition", ctx.definitions)
-            elif name in ctx.constants:
-                cache_item(name, "constant", ctx.constants)
-            elif name in ctx.operations:
-                cache_item(name, "operation", ctx.operations)
+            elif name in ctx.symbols:
+                cache_item(name, "symbol", ctx.symbols)
             elif name in ctx.proven_theorems:
                 cache_item(name, "theorem", ctx.proven_theorems)
 

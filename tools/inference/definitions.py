@@ -1,4 +1,4 @@
-"""Inference rules for definitions, constants, and operations."""
+"""Inference rules for definitions and symbols."""
 
 from __future__ import annotations
 
@@ -46,15 +46,11 @@ def apply_definition(
     def_name = str(rule_args[0]).strip()
     source_line = _get_line_ref(rule_args[1]) if len(rule_args) > 1 else None
 
-    # Retrieve definition/operation/constant from context
-    defn = (
-        ctx.definitions.get(def_name) or ctx.operations.get(def_name) or ctx.constants.get(def_name)
-    )
+    # Retrieve definition/symbol from context
+    defn = ctx.definitions.get(def_name) or ctx.symbols.get(def_name)
 
     if defn is None:
-        raise VerificationError(
-            f"Def: unknown definition, operation, or constant '{def_name}'", step_number
-        )
+        raise VerificationError(f"Def: unknown definition or symbol '{def_name}'", step_number)
 
     source = ctx.get_line(source_line) if source_line is not None else None
 

@@ -31,17 +31,18 @@ definition IsEmpty(A):
     ∀x ¬(x ∈ A)
 ```
 
-### Constants & Operations
+### Symbols (Constants & Operations)
 
-Verified constructs requiring prior existence and uniqueness theorems.
+Verified constructs requiring prior existence and uniqueness theorems. Constants are symbols with no
+parameters, and operations are symbols with one or more parameters.
 
-```text
-constant ∅:
+```fol
+symbol ∅:
     ∀x ¬(x ∈ ∅)
 existence: EmptySetExistence
 uniqueness: EmptySetUniqueness
 
-operation A ∪ B:
+symbol A ∪ B:
     ∀x (x ∈ A ∪ B ⟺ (x ∈ A ∨ x ∈ B))
 existence: UnionExistence
 uniqueness: UnionUniqueness
@@ -103,9 +104,9 @@ Implication | `[ImplIntro i, j]` | Discharge assumption `P` (i) to conclude `P �
 occurrence of `t` with `s` using `t = s`. | | | | `[EqReplaceAll i, j]` | Substitute all occurrences
 of `t` with `s`. | | **References** | Citation | `[Axiom Name, ...]` | Cite a global symbol. | | | |
 `[Theorem Name, ...]` | Supports trailing terms for UI and integers for MP. | | | |
-`[Constant Name, ...]` | UI is applied before MP. | | | | `[Operation Name, ...]` | | | | |
-`[Schema Name, φ := F]` | Instantiation of a schema with formula `F`. | | **Definitions** |
-Expansion | `[Def Name, i]` | Expand/contract named definition `Name` in line `i`. |
+`[Symbol Name, ...]` | UI is applied before MP. | | | | `[Schema Name, φ := F]` | Instantiation of a
+schema with formula `F`. | | **Definitions** | Expansion | `[Def Name, i]` | Expand/contract named
+definition `Name` in line `i`. |
 
 ## Grammar & Operators
 

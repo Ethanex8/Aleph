@@ -241,16 +241,16 @@ def apply_axiom_ref(
     return _apply_citation_rule(ctx, line, "Axiom", ctx.axioms)
 
 
-@inference_rule("Operation")
-def apply_operation_ref(
+@inference_rule("Symbol")
+def apply_symbol_ref(
     ctx: ProofContext,
     line: ProofLine,
 ) -> Formula:
-    """[Operation Name, (Term|LineRef), ...] — Operation Reference.
+    """[Symbol Name, (Term|LineRef), ...] — Symbol Reference.
 
-    Cites a loaded operation by name and optionally applies UI and MP.
+    Cites a loaded symbol by name and optionally applies UI and MP.
     """
-    return _apply_citation_rule(ctx, line, "Operation", ctx.operations)
+    return _apply_citation_rule(ctx, line, "Symbol", ctx.symbols)
 
 
 @inference_rule("Theorem")
@@ -263,18 +263,6 @@ def apply_theorem_ref(
     Cites a previously proven theorem by name and optionally applies UI and MP.
     """
     return _apply_citation_rule(ctx, line, "Theorem", ctx.proven_theorems)
-
-
-@inference_rule("Constant")
-def apply_constant_ref(
-    ctx: ProofContext,
-    line: ProofLine,
-) -> Formula:
-    """[Constant Name, (Term|LineRef), ...] — Constant Reference.
-
-    Cites a loaded constant by name and optionally applies UI and MP.
-    """
-    return _apply_citation_rule(ctx, line, "Constant", ctx.constants)
 
 
 @inference_rule("Schema")
