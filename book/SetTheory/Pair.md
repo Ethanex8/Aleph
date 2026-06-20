@@ -47,8 +47,8 @@ uniqueness: PairUniqueness
 
 ## Pair Commutativity
 
-The pair symbol is commutative, meaning that the order of the elements in the pair does not
-affect the set itself: ${A, B} = {B, A}$.
+The pair symbol is commutative, meaning that the order of the elements in the pair does not affect
+the set itself: ${A, B} = {B, A}$.
 
 ```fol
 theorem PairCommutativity:

@@ -15,8 +15,8 @@ from tools.parser.ast_nodes import (
     DefinitionDecl,
     Formula,
     InfixPredicate,
-    SymbolDecl,
     SchemaDecl,
+    SymbolDecl,
     TheoremDecl,
 )
 from tools.parser.ast_utils import (

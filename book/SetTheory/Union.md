@@ -46,9 +46,9 @@ uniqueness: UnionUniqueness
 
 ## Binary Union
 
-We can now define the binary union $A \\cup B$ using the `Union` and `{,}` symbols. With
-syntactic sugar `set_enum` (e.g. `{A, B, C}`), the parser automatically converts multi-element sets
-into binary unions under the hood: `{A, B} ∪ {C}`.
+We can now define the binary union $A \\cup B$ using the `Union` and `{,}` symbols. With syntactic
+sugar `set_enum` (e.g. `{A, B, C}`), the parser automatically converts multi-element sets into
+binary unions under the hood: `{A, B} ∪ {C}`.
 
 ```fol
 theorem BinaryUnionExistence:

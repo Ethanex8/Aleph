@@ -46,7 +46,7 @@ qed
 ## The Empty Set Symbol
 
 Now that we have proven that an empty set exists and that it is unique, we can formally introduce a
-symbol for it: $\emptyset$.
+symbol for it: $\\emptyset$.
 
 ```fol
 symbol ∅:
