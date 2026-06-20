@@ -33,12 +33,12 @@ proof:
 qed
 ```
 
-## The Union Operation
+## The Union Symbol
 
-With existence and uniqueness proven, we define the `Union(A)` operation.
+With existence and uniqueness proven, we define the `Union(A)` symbol.
 
 ```fol
-operation Union(A):
+symbol Union(A):
     ∀x (x ∈ Union(A) ⟺ ∃y (y ∈ A ∧ x ∈ y))
 existence: UnionExistence
 uniqueness: UnionUniqueness
@@ -46,7 +46,7 @@ uniqueness: UnionUniqueness
 
 ## Binary Union
 
-We can now define the binary union $A \\cup B$ using the `Union` and `{,}` operations. With
+We can now define the binary union $A \\cup B$ using the `Union` and `{,}` symbols. With
 syntactic sugar `set_enum` (e.g. `{A, B, C}`), the parser automatically converts multi-element sets
 into binary unions under the hood: `{A, B} ∪ {C}`.
 
@@ -55,7 +55,7 @@ theorem BinaryUnionExistence:
     ∀A ∀B ∃C ∀x (x ∈ C ⟺ ∃y (y ∈ {A, B} ∧ x ∈ y))
 proof:
     1. Let A, B be arbitrary [Hypothesis]
-        2. ∀x (x ∈ Union({A, B}) ⟺ ∃y (y ∈ {A, B} ∧ x ∈ y)) [Operation Union, {A, B}]
+        2. ∀x (x ∈ Union({A, B}) ⟺ ∃y (y ∈ {A, B} ∧ x ∈ y)) [Symbol Union, {A, B}]
         3. ∃C ∀x (x ∈ C ⟺ ∃y (y ∈ {A, B} ∧ x ∈ y)) [ExistsIntro 2, Union({A, B}), C]
     4. ∀A ∀B ∃C ∀x (x ∈ C ⟺ ∃y (y ∈ {A, B} ∧ x ∈ y)) [UG 3, A, B]
 qed
@@ -77,7 +77,7 @@ proof:
     12. ∀A ∀B ∀C ∀D ((∀x (x ∈ C ⟺ ∃y (y ∈ {A, B} ∧ x ∈ y)) ∧ ∀x (x ∈ D ⟺ ∃y (y ∈ {A, B} ∧ x ∈ y))) ⟹ C = D) [UG 11, A, B, C, D]
 qed
 
-operation A ∪ B:
+symbol A ∪ B:
     ∀x (x ∈ A ∪ B ⟺ ∃y (y ∈ {A, B} ∧ x ∈ y))
 existence: BinaryUnionExistence
 uniqueness: BinaryUnionUniqueness

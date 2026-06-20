@@ -33,13 +33,13 @@ def test_prohibit_redefinition_membership():
         ctx.register_definition("∈", parse_formula("∀x ∀A (x ∈ A ⟺ x ∈ A)"))
 
 
-def test_prohibit_redefinition_equality_constant():
+def test_prohibit_redefinition_equality_symbol():
     ctx = ProofContext()
     with pytest.raises(VerificationError, match="Cannot redefine primitive symbol: ="):
-        ctx.register_constant("=", parse_formula("∀x ∀y (x = y)"))
+        ctx.register_symbol("=", parse_formula("∀x ∀y (x = y)"))
 
 
-def test_prohibit_redefinition_membership_operation():
+def test_prohibit_redefinition_membership_symbol():
     ctx = ProofContext()
     with pytest.raises(VerificationError, match="Cannot redefine primitive symbol: ∈"):
-        ctx.register_operation("∈", parse_formula("∀x ∀A (x ∈ A)"))
+        ctx.register_symbol("∈", parse_formula("∀x ∀A (x ∈ A)"))

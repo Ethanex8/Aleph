@@ -27,7 +27,7 @@ from tools.parser.ast_nodes import (
     InfixTerm,
     Justification,
     Not,
-    OperationDecl,
+    SymbolDecl,
     Or,
     Predicate,
     ProofLine,
@@ -148,10 +148,10 @@ class FolTransformer(Transformer):  # type: ignore[type-arg]
         formula: Formula,
         ex_proof: Token,
         un_proof: Token,
-    ) -> OperationDecl:
-        """Construct an OperationDecl rigorously backed by existence and uniqueness proofs."""
+    ) -> SymbolDecl:
+        """Construct a SymbolDecl rigorously backed by existence and uniqueness proofs."""
         name, params = sig
-        return OperationDecl(
+        return SymbolDecl(
             name=name,
             params=params,
             formula=formula,
@@ -350,8 +350,7 @@ def _validate_proof_indentation(
         "schema",
         "definition",
         "theorem",
-        "constant",
-        "operation",
+        "symbol",
         "proof:",
         "qed",
         "existence:",

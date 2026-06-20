@@ -69,8 +69,7 @@ class ProofContext:
     axioms: dict[str, Formula] = field(default_factory=dict)
     schemas: dict[str, SchemaDecl] = field(default_factory=dict)
     definitions: dict[str, Formula] = field(default_factory=dict)
-    constants: dict[str, Formula] = field(default_factory=dict)
-    operations: dict[str, Formula] = field(default_factory=dict)
+    symbols: dict[str, Formula] = field(default_factory=dict)
     proven_theorems: dict[str, Formula] = field(default_factory=dict)
 
     proof_lines: dict[int, Formula] = field(default_factory=dict)
@@ -114,21 +113,13 @@ class ProofContext:
             raise VerificationError(f"Duplicate definition: {name}")
         self.definitions[name] = formula
 
-    def register_constant(self, name: str, formula: Formula) -> None:
-        """Register a new constant definition. Raises VerificationError if the name is already used."""
+    def register_symbol(self, name: str, formula: Formula) -> None:
+        """Register a new symbol definition. Raises VerificationError if the name is already used."""
         if name in {"=", "∈"}:
             raise VerificationError(f"Cannot redefine primitive symbol: {name}")
-        if name in self.constants:
-            raise VerificationError(f"Duplicate constant: {name}")
-        self.constants[name] = formula
-
-    def register_operation(self, name: str, formula: Formula) -> None:
-        """Register a new operation definition. Raises VerificationError if the name is already used."""
-        if name in {"=", "∈"}:
-            raise VerificationError(f"Cannot redefine primitive symbol: {name}")
-        if name in self.operations:
-            raise VerificationError(f"Duplicate operation: {name}")
-        self.operations[name] = formula
+        if name in self.symbols:
+            raise VerificationError(f"Duplicate symbol: {name}")
+        self.symbols[name] = formula
 
     def register_theorem(self, name: str, formula: Formula) -> None:
         """Register a proven theorem. Raises VerificationError if the name is already used."""

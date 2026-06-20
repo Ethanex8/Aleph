@@ -15,7 +15,7 @@ from tools.parser.ast_nodes import (
     DefinitionDecl,
     Formula,
     InfixPredicate,
-    OperationDecl,
+    SymbolDecl,
     SchemaDecl,
     TheoremDecl,
 )
@@ -93,7 +93,7 @@ def declaration_handler(
 
 
 def _process_declaration(
-    decl: AxiomDecl | SchemaDecl | DefinitionDecl | TheoremDecl | OperationDecl,
+    decl: AxiomDecl | SchemaDecl | DefinitionDecl | TheoremDecl | SymbolDecl,
     ctx: ProofContext,
 ) -> str | None:
     """Process a single top-level declaration using the registered handler."""
@@ -134,10 +134,8 @@ def _handle_definition(decl: DefinitionDecl, ctx: ProofContext) -> str:
     lhs_vars = get_free_vars(f.left)  # type: ignore[arg-type]
     rhs_vars = get_free_vars(f.right)  # type: ignore[arg-type]
 
-    # Remove known constants and definitions from the free variables
-    known_symbols = (
-        set(ctx.constants.keys()) | set(ctx.definitions.keys()) | set(ctx.operations.keys())
-    )
+    # Remove known symbols and definitions from the free variables
+    known_symbols = set(ctx.symbols.keys()) | set(ctx.definitions.keys())
     lhs_vars = {v for v in lhs_vars if v not in known_symbols}
     rhs_vars = {v for v in rhs_vars if v not in known_symbols}
 
@@ -158,18 +156,15 @@ def _handle_theorem(decl: TheoremDecl, ctx: ProofContext) -> str:
     return _verify_theorem(decl, ctx)
 
 
-@declaration_handler(OperationDecl)
-def _handle_operation(decl: OperationDecl, ctx: ProofContext) -> str:
+@declaration_handler(SymbolDecl)
+def _handle_symbol(decl: SymbolDecl, ctx: ProofContext) -> str:
     vars_in_formula = get_free_vars(decl.formula)
-    known_symbols = (
-        set(ctx.constants.keys()) | set(ctx.definitions.keys()) | set(ctx.operations.keys())
-    )
+    known_symbols = set(ctx.symbols.keys()) | set(ctx.definitions.keys())
     vars_in_formula = {v for v in vars_in_formula if v not in known_symbols and v != decl.name}
 
     if vars_in_formula != set(decl.params):
-        label = "Constant" if not decl.params else "Operation"
         raise VerificationError(
-            f"{label} '{decl.name}' free variables do not match parameters.\n"
+            f"Symbol '{decl.name}' free variables do not match parameters.\n"
             f"  Expected: {sorted(set(decl.params))}\n"
             f"  Found:    {sorted(vars_in_formula)}"
         )
@@ -177,8 +172,7 @@ def _handle_operation(decl: OperationDecl, ctx: ProofContext) -> str:
     _verify_defined_symbol(
         decl.name, decl.params, decl.formula, decl.existence_proof, decl.uniqueness_proof, ctx
     )
-    label = "Constant" if not decl.params else "Operation"
-    print(f"  [OK] {label} rigorously verified: {decl.name}")
+    print(f"  [OK] Symbol rigorously verified: {decl.name}")
     return decl.name
 
 
@@ -190,7 +184,7 @@ def _verify_defined_symbol(
     uniqueness_proof: str,
     ctx: ProofContext,
 ) -> None:
-    """Unifies verification of existence and uniqueness proofs for both constants and operations."""
+    """Unifies verification of existence and uniqueness proofs for defined symbols."""
     from tools.inference.references import _try_match
 
     req_existence = build_req_existence(name, params, formula)
@@ -213,10 +207,10 @@ def _verify_defined_symbol(
 
     # Registration
     if not params:
-        ctx.register_constant(name, formula)
+        ctx.register_symbol(name, formula)
     else:
         op_formula = wrap_forall(formula, params)
-        ctx.register_operation(name, op_formula)
+        ctx.register_symbol(name, op_formula)
 
 
 def _verify_proof_lines(

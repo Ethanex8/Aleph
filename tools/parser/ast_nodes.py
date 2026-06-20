@@ -247,8 +247,8 @@ class DefinitionDecl:
 
 
 @dataclass(frozen=True)
-class OperationDecl:
-    """An n-ary operation definition rigorously backed by existence and uniqueness proofs."""
+class SymbolDecl:
+    """A symbol (constant or operation) definition rigorously backed by existence and uniqueness proofs."""
 
     name: str
     formula: Formula
